@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Daily Brief (data/latest.json)",
+  "title": "The Black Brief (data/latest.json)",
   "description": "Written by /daily-brief. Only summaries, short quotes and links: never full text.",
   "type": "object",
   "required": [
@@ -10,7 +10,7 @@
     "episodes",
     "headlines",
     "failed_sources",
-    "laughs"
+    "levity"
   ],
   "additionalProperties": false,
   "properties": {
@@ -44,11 +44,11 @@
         "$ref": "#/$defs/headline"
       }
     },
-    "laughs": {
+    "levity": {
       "type": "array",
       "maxItems": 2,
       "items": {
-        "$ref": "#/$defs/laugh"
+        "$ref": "#/$defs/levity_item"
       }
     }
   },
@@ -196,7 +196,7 @@
         }
       }
     },
-    "laugh": {
+    "levity_item": {
       "type": "object",
       "required": [
         "id",

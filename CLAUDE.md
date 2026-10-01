@@ -1,4 +1,4 @@
-# Daily Brief
+# The Black Brief
 
 Personal, free, mobile-first morning news app. Read `PLAN.md` first: it has the
 architecture, the stages, the decisions made so far, and the Stage 1 test results.
@@ -15,7 +15,7 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
   publish full transcripts or article text. Raw inputs go in `data/raw/` (gitignored).
 - Sources with `"summarize": false` in `config/sources.json` (Reuters, Bluesky) get headline +
   link only, and so do paid-only Substack posts. Never write a summary from a headline alone.
-- Laughs items are title, show and link only. Black Perspectives (`"black_life": "always"`)
+- Levity items are title, show and link only. Black Perspectives (`"black_life": "always"`)
   is always tagged Black Life.
 - The repo is private. The app is hosted on Cloudflare Pages behind Cloudflare Access
   (owner's email only). Don't add GitHub Pages.
@@ -25,8 +25,8 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
 - `fetcher/fetch.py`: fetches all sources → `data/raw/feeds.json` plus a printed report.
   Kinds: rss, podcast, youtube, bluesky, substack (archive API: author filter, paid-only
   posts are headline + link, free podcasts go to Whisper), newyorker (contributor page),
-  people_search (`fetcher/laughs.py`)
-- `fetcher/laughs.py`: Karlous Miller tracker for the Laughs section (YouTube search page +
+  people_search (`fetcher/levity.py`)
+- `fetcher/levity.py`: Karlous Miller tracker for the Levity section (YouTube search page +
   iTunes Search API; last 7 days, no clips/compilations/reuploads/repeats, max 2)
 - `fetcher/prepare.py`: Stage 2. New items since the last brief, captions + Whisper
   transcripts, dedupe → `data/raw/brief_input.json` and `data/raw/text/` (full text, never published)
@@ -40,7 +40,7 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
 ## Commands
 - Setup: see `SETUP.md`
 - Test the fetcher: `python fetcher/fetch.py --limit 2`
-- Sample the Laughs tracker: `python fetcher/laughs.py`
+- Sample the Levity tracker: `python fetcher/levity.py`
 - Collect today's items: `python fetcher/prepare.py` (`--no-whisper` to skip podcast transcription)
 - After a brief is published: `python fetcher/prepare.py --mark-done`
 - Check a brief: `python fetcher/validate.py`

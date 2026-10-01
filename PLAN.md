@@ -1,4 +1,4 @@
-# Daily Brief — Plan
+# The Black Brief — Plan
 
 A free, personal, mobile-first morning news app. $0: GitHub (private repo), Cloudflare
 Pages + Access (free plans), open-source libraries, local Whisper.
@@ -18,7 +18,7 @@ Pages + Access (free plans), open-source libraries, local Whisper.
  Private GitHub repo  ──►  Cloudflare Pages (free) builds the static site on push
                            Cloudflare Access (free Zero Trust plan): only your
                            email can sign in (one-time code sent to your inbox)
-   PWA: add to home screen · Tabs: Listen · Headlines · Black Life · Quotes · small Laughs section
+   PWA: add to home screen · Tabs: Listen · Headlines · Black Life · Quotes · small Levity section
 ```
 
 ## Stages (each waits for your approval)
@@ -119,4 +119,4 @@ Posting counts, Aug 2 – Oct 1, 2026 (60 days):
 
 Bluesky: Harriot and Jemele Hill active (added, headline + link, max 5/day). Cobb last
 posted May 21, Cross Aug 9: not added. Black Perspectives (AAIHS): ~weekly, full article
-text downloaded, always Black Life. Laughs: Karlous Miller tracker, max 2/day.
+text downloaded, always Black Life. Levity: Karlous Miller tracker, max 2/day.

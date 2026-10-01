@@ -1,4 +1,4 @@
-# Set up Daily Brief on your computer
+# Set up The Black Brief on your computer
 
 A one-time setup of about 30–45 minutes. You type the commands in the **Terminal**
 (Mac: press Cmd+Space, type "Terminal") or **PowerShell** (Windows: Start menu, type

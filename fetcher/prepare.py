@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Daily Brief Stage 2: collect what's new since the last brief and get transcripts.
+"""The Black Brief Stage 2: collect what's new since the last brief and get transcripts.
 
   1. Fetch every source (fetch.py).
   2. Keep items published since the last brief that haven't been briefed before.
@@ -302,9 +302,9 @@ def mark_done():
     for it in done:
         state["seen"][it["link"]] = data["collected_at"]
         state["pending"].pop(it["link"], None)
-    shown = state.setdefault("shown_titles", {})  # Laughs: catch the same episode under a new link
+    shown = state.setdefault("shown_titles", {})  # Levity: catch the same episode under a new link
     for it in data["items"]:
-        if it["section"] == "laughs":
+        if it["section"] == "levity":
             shown[it["title"]] = data["collected_at"]
     state["last_brief_at"] = data["collected_at"]
     cutoff = now() - timedelta(days=SEEN_DAYS)

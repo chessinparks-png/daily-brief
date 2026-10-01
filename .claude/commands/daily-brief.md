@@ -3,7 +3,7 @@ description: Collect today's news, write the brief, validate it, and publish it
 allowed-tools: Bash(.venv/bin/python fetcher/prepare.py:*), Bash(.venv/bin/python fetcher/validate.py), Bash(git add data/latest.json), Bash(git commit:*), Bash(git push), Read, Write, Edit
 ---
 
-Write today's Daily Brief. Work without asking questions: this may run unattended
+Write today's edition of The Black Brief. Work without asking questions: this may run unattended
 before the owner wakes up. Follow every step in order.
 
 ## 1. Collect
@@ -20,7 +20,7 @@ never write a summary from a headline alone.
 ## 3. Write `data/latest.json`
 It must match `config/brief.schema.json`. Keep the items in `brief_input.json` order.
 Every item appears exactly once: `section: "listen"` → `episodes`,
-`section: "laughs"` → `laughs`, everything else → `headlines`. Copy `id`, `source`, `published` and `link` (as `url`)
+`section: "levity"` → `levity`, everything else → `headlines`. Copy `id`, `source`, `published` and `link` (as `url`)
 exactly. Top level: `date` (today, YYYY-MM-DD), `generated_at` (now, ISO 8601 with
 timezone), `since` (from brief_input.json), `failed_sources` (the `source` names in
 brief_input.json's `failed_sources`).
@@ -44,7 +44,7 @@ brief_input.json's `failed_sources`).
 - `summary`: `summarize: true` → 1–2 sentences, max 60 words, your own words.
   `summarize: false` → `null`.
 
-**Laughs** (`section: "laughs"`): copy `id`, `source`, `title`, `show`, `platform`,
+**Levity** (`section: "levity"`): copy `id`, `source`, `title`, `show`, `platform`,
 `published` and `link` (as `url`). No summary, nothing else.
 
 **For every summary, card and takeaway:** use only facts in the source text. Write in your
@@ -72,12 +72,12 @@ Run `.venv/bin/python fetcher/validate.py`.
 Only after validate prints `OK`:
 ```
 git add data/latest.json
-git commit -m "Daily brief YYYY-MM-DD"
+git commit -m "The Black Brief YYYY-MM-DD"
 git push
 .venv/bin/python fetcher/prepare.py --mark-done
 ```
 Never add anything from `data/raw/`. If `git push` fails, say so and don't run `--mark-done`.
 
 ## 6. Report
-A short summary for the owner: the number of episodes, headlines and laughs, how many are tagged
+A short summary for the owner: the number of episodes, headlines and Levity items, how many are tagged
 Black Life, anything skipped or held for retry, and any failed sources.

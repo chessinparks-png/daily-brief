@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Daily Brief feed fetcher (Stage 1).
+"""The Black Brief feed fetcher (Stage 1).
 
 Reads config/sources.json, resolves each source to a feed URL, fetches the
 latest items, and (for YouTube) checks that captions are available.
@@ -28,7 +28,7 @@ RESOLVED = ROOT / "config" / "resolved.json"
 OUT = ROOT / "data" / "raw" / "feeds.json"
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36 DailyBrief/0.1")
+      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36 BlackBrief/0.1")
 # Some hosts (e.g. Substack) 403 browser-like UAs from datacenter IPs but allow feed readers.
 ALT_UAS = ["Feedly/1.0 (+http://www.feedly.com/fetcher.html; like FeedFetcher-Google)",
            "feedparser/6.0 +https://github.com/kurtmckee/feedparser",
@@ -237,8 +237,8 @@ def items_newyorker(src, limit, notes):
 
 
 def items_people_search(src, limit, notes):
-    import laughs
-    picked, rejected = laughs.find(src["person"], src.get("own_shows", []),
+    import levity
+    picked, rejected = levity.find(src["person"], src.get("own_shows", []),
                                    already_shown=src.get("_already_shown", ()), limit=src.get("max_items", 2))
     notes.append(f"{len(picked)} picked, {sum(r['reason'] != 'older than 7 days' for r in rejected)} "
                  f"recent candidates rejected")
@@ -360,7 +360,7 @@ def fetch_source(src, limit, captions):
 
 
 def report(results):
-    lines = ["=" * 72, "DAILY BRIEF — FEED FETCH REPORT  " +
+    lines = ["=" * 72, "THE BLACK BRIEF — FEED FETCH REPORT  " +
              datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "=" * 72]
     for r in results:
         flag = "OK  " if r["ok"] else "FAIL"

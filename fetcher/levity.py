@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Find new appearances by a comedian (Karlous Miller) for the "Laughs" section.
+"""Find new appearances by a comedian (Karlous Miller) for the "Levity" section.
 
 Free sources only: YouTube's public search page and Apple's iTunes Search API.
 Keeps uploads from the last 7 days with the name in the title or description, and
 skips clips, compilations, reaction videos, reuploads and repeats. Output is title,
 channel/show and link only: no summary.
 
-Usage (sample): python fetcher/laughs.py
+Usage (sample): python fetcher/levity.py
 """
 import json
 import re
