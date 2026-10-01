@@ -94,7 +94,11 @@ def resolve_youtube(src, notes):
     cookies = {"CONSENT": "YES+1", "SOCS": "CAI"}
     ids = []
     for h in src.get("handles", []):
-        r = get(f"https://www.youtube.com/@{h}", cookies=cookies)
+        try:
+            r = get(f"https://www.youtube.com/@{h}", cookies=cookies)
+        except requests.RequestException as e:
+            notes.append(f"handle @{h}: {type(e).__name__}")
+            continue
         cid = channel_id_from_html(r.text) if r.status_code == 200 else None
         notes.append(f"handle @{h} -> {cid or f'HTTP {r.status_code}'}")
         if cid:
@@ -218,8 +222,9 @@ def fetch_source(src, limit, captions):
         result.update(ok=True, feed_url=url, feed_title=feed.feed.get("title"),
                       total_entries=len(feed.entries))
         for e in feed.entries[:limit]:
-            item = {"title": e.get("title"), "link": e.get("link"), "published": iso(e),
-                    "summary": clean(e.get("summary") or e.get("description"), 400)}
+            summary = clean(e.get("summary") or e.get("description"), 400)
+            item = {"title": e.get("title") or clean(summary, 90), "link": e.get("link"), "published": iso(e),
+                    "summary": summary}
             if src["kind"] == "podcast":
                 enc = next((l for l in e.get("links", []) if l.get("rel") == "enclosure"), None)
                 item["audio_url"] = enc.get("href") if enc else None
@@ -227,6 +232,8 @@ def fetch_source(src, limit, captions):
             if src["kind"] == "youtube":
                 item["video_id"] = e.get("yt_videoid")
             result["items"].append(item)
+        if url != urls[0]:
+            notes.append(f"using fallback feed ({url[:60]}…)")
         break
 
     if result["ok"] and src["kind"] == "youtube" and captions:

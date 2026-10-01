@@ -6,7 +6,8 @@
       "name": "Native Land Pod",
       "kind": "podcast",
       "section": "listen",
-      "itunes_search": "Native Land Pod"
+      "itunes_search": "Native Land Pod",
+      "feed_url": "https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/2ff2787c-f4fa-44c3-901e-b0df01400acb/14e7fc6c-fcbf-4b34-98bc-b0df0140ae06/podcast.rss"
     },
     {
       "id": "jemele-hill-yt",
@@ -18,7 +19,8 @@
         "JemeleHillisUnbothered",
         "jemelehill"
       ],
-      "search": "Jemele Hill Unbothered"
+      "search": "Jemele Hill Unbothered",
+      "channel_id": "UC25GHmlU1I-zbNcZe7a-aiQ"
     },
     {
       "id": "hcr-yt",
@@ -29,7 +31,8 @@
         "HeatherCoxRichardson",
         "heathercoxrichardson"
       ],
-      "search": "Heather Cox Richardson"
+      "search": "Heather Cox Richardson",
+      "channel_id": "UCnbKOlm6H9njgmN-Yil90Rg"
     },
     {
       "id": "hcr-substack",
@@ -38,8 +41,9 @@
       "section": "headlines",
       "urls": [
         "https://heathercoxrichardson.substack.com/feed",
-        "https://letters.heathercoxrichardson.com/feed"
-      ]
+        "https://news.google.com/rss/search?q=site:heathercoxrichardson.substack.com&hl=en-US&gl=US&ceid=US:en"
+      ],
+      "_note": "Substack 403s GitHub Actions IPs; the Google News fallback gives titles + links only."
     },
     {
       "id": "capital-b",
@@ -66,7 +70,9 @@
       "name": "Philip Lewis (Bluesky)",
       "kind": "bluesky",
       "section": "headlines",
-      "handles": [],
+      "handles": [
+        "phillewis.bsky.social"
+      ],
       "search": [
         "Philip Lewis",
         "Phil Lewis",
