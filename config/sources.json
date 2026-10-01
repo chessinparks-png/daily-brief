@@ -92,7 +92,8 @@
         "huffington",
         "senior front page editor"
       ],
-      "summarize": true
+      "summarize": false,
+      "_note": "Posts are one-line news shares: headline + link only (owner's choice, Stage 2 review)."
     },
     {
       "id": "the-atlantic",
@@ -112,6 +113,8 @@
       "urls": [
         "https://www.washingtoninformer.com/feed/"
       ],
+      "fetch_full_text": true,
+      "_note": "The feed only has a short excerpt, so prepare.py downloads each article page.",
       "summarize": true
     }
   ]

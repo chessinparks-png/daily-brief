@@ -89,6 +89,17 @@ def write_text(item, text):
     item["text_chars"] = len(text)
 
 
+def article_text(url):
+    """Main text of an article page (for feeds that only carry an excerpt). Stays in data/raw."""
+    import trafilatura
+    try:
+        r = fetch.get(url)
+        time.sleep(1)
+        return (trafilatura.extract(r.text, include_comments=False, include_tables=False) or "") if r.ok else ""
+    except Exception:  # noqa: BLE001
+        return ""
+
+
 # ---------- transcripts ----------
 
 _whisper = None
@@ -222,7 +233,14 @@ def collect(args):
                         item["note"] = f"Whisper failed: {type(e).__name__}: {e}"
 
             else:
-                write_text(item, it.get("content") or it.get("summary") or "")
+                text = it.get("content") or it.get("summary") or ""
+                if src.get("fetch_full_text"):
+                    full = article_text(it["link"])
+                    if len(full) > len(text):
+                        text = full
+                    else:
+                        item["note"] = "full article unavailable; using feed excerpt"
+                write_text(item, text)
 
             item.setdefault("status", "ok")
             item["summarize"] = bool(src.get("summarize", True) and item["status"] == "ok"

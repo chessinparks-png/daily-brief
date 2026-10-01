@@ -25,9 +25,9 @@ Pages + Access (free plans), open-source libraries, local Whisper.
 
 1. **Feed fetcher** — `config/sources.json`, `fetcher/fetch.py`, test workflow.
    Test every source, report results, flag failures + free fixes. ✅ approved
-2. **Transcripts** (runs locally) — YouTube captions, Whisper for Native Land Pod,
-   skip Shorts and not-yet-aired live events, "new since last brief" window, dedupe. ← *in review*
-3. **/daily-brief command** — `.claude/commands/daily-brief.md` + JSON schema
+2. **Transcripts** (runs locally) ✅ approved — — YouTube captions, Whisper for Native Land Pod,
+   skip Shorts and not-yet-aired live events, "new since last brief" window, dedupe.
+3. **/daily-brief command** ← *next* — — `.claude/commands/daily-brief.md` + JSON schema
    + validator; Black Life tagging + `config/black_life_keywords.txt` (editable).
 4. **Web app** — static HTML/CSS/JS (no build step), 4 tabs, mobile-first,
    PWA manifest + service worker, dark mode, deployed to Cloudflare Pages
@@ -93,3 +93,9 @@ Substack 403s the same IPs. Both work from a home internet connection.
 - **Output:** `data/raw/brief_input.json` (item list) + `data/raw/text/<source>/<id>.txt`
   (full text with `[m:ss]` timestamps). All gitignored.
 - `--mark-done` is run after a brief is published; it advances the window.
+
+## Decisions (Stage 2 review)
+- Whisper stays on `small.en` (accuracy over speed; quotes must be exact). ~20 min per hour of audio.
+- Philip Lewis: headline + link only (`"summarize": false`).
+- Washington Informer: feed has excerpts only, so full articles are downloaded
+  (`"fetch_full_text": true`, extracted with trafilatura; kept in data/raw/ only).
