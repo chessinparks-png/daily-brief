@@ -174,33 +174,31 @@ def article_text(url):
 
 
 # ---------- preview images (URLs only: the app loads them from the source, nothing is downloaded) ----------
+# Only an image that belongs to the item: a video's own YouTube thumbnail, or a story's own
+# og:image. Podcasts and everything else get none (the app shows a gradient card).
 
 def youtube_thumb(video_id):
     """hq720 has no letterbox bars; the app falls back to hqdefault if a video lacks it."""
     return f"https://i.ytimg.com/vi/{video_id}/hq720.jpg" if video_id else None
 
 
-def entry_image(e, feed, use_feed_art=False):
-    """Best image an RSS/Atom entry carries itself. Podcasts fall back to the show artwork;
-    news sites don't (their feed image is a logo, and the article's og:image is better)."""
-    for m in (e.get("media_content") or []) + (e.get("media_thumbnail") or []):
-        if m.get("url") and (m.get("medium") in (None, "image") or "image" in m.get("type", "")):
-            return m["url"]
-    for link in e.get("links", []):
-        if link.get("rel") == "enclosure" and link.get("type", "").startswith("image/"):
-            return link.get("href")
-    if isinstance(e.get("image"), dict) and e["image"].get("href"):
-        return e["image"]["href"]
-    m = re.search(r'<img[^>]+src="(https?://[^"]+)"', e.get("summary") or "")
-    if m and not re.search(r"(feeds\.feedburner|pixel|tracking|1x1|gravatar)", m.group(1)):
-        return m.group(1)
-    if use_feed_art:
-        img = feed.feed.get("image") or {}
-        return img.get("href") or img.get("url")
-    return None
-
-
 OG_SKIP = ("news.google.com", "bsky.app")
+
+
+def youtube_id(url):
+    m = re.search(r"(?:[?&]v=|youtu\.be/|/shorts/)([\w-]{11})", url or "")
+    return m.group(1) if m else None
+
+
+def item_image(section, url):
+    """The item's own image URL, or None. Videos: YouTube thumbnail. Stories: og:image.
+    Podcast episodes (and Levity podcast links) never get one."""
+    vid = youtube_id(url)
+    if vid:
+        return youtube_thumb(vid)
+    if section in ("listen", "levity"):
+        return None
+    return og_image(url)
 
 
 def og_image(url):
@@ -236,8 +234,7 @@ def items_substack(src, limit, notes):
         free = post.get("audience") == "everyone"
         item = {"title": post["title"], "link": post["canonical_url"], "published": published,
                 "summary": clean(post.get("subtitle") or post.get("description"), 400),
-                "post_type": post.get("type"), "paid_only": not free,
-                "image": post.get("cover_image") or post.get("podcast_episode_image_url")}
+                "post_type": post.get("type"), "paid_only": not free}
         if free and post.get("type") == "podcast" and post.get("podcast_url"):
             item.update(section="listen", audio_url=post["podcast_url"],
                         duration=post.get("podcast_duration"))
@@ -292,11 +289,7 @@ def items_people_search(src, limit, notes):
                                    already_shown=src.get("_already_shown", ()), limit=src.get("max_items", 2))
     notes.append(f"{len(picked)} picked, {sum(r['reason'] != 'older than 7 days' for r in rejected)} "
                  f"recent candidates rejected")
-    def thumb(c):
-        m = re.search(r"[?&]v=([\w-]{11})", c["link"] or "")
-        return youtube_thumb(m.group(1)) if m else c.get("artwork")
     return [{"title": c["title"], "link": c["link"], "show": c["show"], "platform": c["platform"],
-             "image": thumb(c),
              "published": (datetime.now(timezone.utc) - timedelta(days=c["age_days"])).isoformat(),
              "summary": ""} for c in picked]
 
@@ -388,14 +381,13 @@ def fetch_source(src, limit, captions):
         for e in feed.entries[:limit]:
             summary = clean(e.get("summary") or e.get("description"), 400)
             item = {"title": e.get("title") or clean(summary, 90), "link": e.get("link"), "published": iso(e),
-                    "summary": summary, "image": entry_image(e, feed, src["kind"] == "podcast")}
+                    "summary": summary}
             if src["kind"] == "podcast":
                 enc = next((l for l in e.get("links", []) if l.get("rel") == "enclosure"), None)
                 item["audio_url"] = enc.get("href") if enc else None
                 item["duration"] = e.get("itunes_duration")
             if src["kind"] == "youtube":
                 item["video_id"] = e.get("yt_videoid")
-                item["image"] = youtube_thumb(item["video_id"])
             if e.get("content"):  # full article body; stays in data/raw, never published
                 item["content"] = clean(e.content[0].get("value"), 10**6)
             result["items"].append(item)

@@ -186,7 +186,7 @@ def collect(args):
         for it in fresh:
             item = {"id": key(it["link"]), "source_id": src["id"], "source": src["name"],
                     "section": it.get("section", src["section"]), "title": it["title"],
-                    "link": it["link"], "published": it["published"], "image": it.get("image")}
+                    "link": it["link"], "published": it["published"]}
             if src.get("black_life") == "always":
                 item["black_life"] = True
             skip = lambda reason: skipped.append({**item, "reason": reason})  # noqa: E731
@@ -251,8 +251,7 @@ def collect(args):
                         item["note"] = "full article unavailable; using feed excerpt"
                 write_text(item, text)
 
-            if not item["image"]:
-                item["image"] = fetch.og_image(it["link"])  # preview image URL only
+            item["image"] = fetch.item_image(item["section"], it["link"])  # URL only, never downloaded
             item.setdefault("status", "ok")
             item["summarize"] = bool(src.get("summarize", True) and item["status"] == "ok"
                                      and item.get("text_chars", 0) >= MIN_TEXT_CHARS)

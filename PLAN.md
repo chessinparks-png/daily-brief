@@ -129,7 +129,9 @@ text downloaded, always Black Life. Levity: Karlous Miller tracker, max 2/day.
   Headlines left out are still marked as covered, so they don't come back the next day.
 
 ## Design (Stage 4, Oct 2 redesign after Particle)
-- One scrolling home screen, no tabs. Order: nature photo header + grounding tip, then
+- Opening (Oct 2 update): a full-screen park photo with the date and the grounding tip large and
+  centered. Tap the tip for another. Scrolling slides the news up over it while the photo fades.
+- One scrolling home screen, no tabs. Order: the opening, then
   Listen, Black Life, Read, Headlines, Quotes, Levity. Each is a bold title with ">" and a
   one-line subtitle over a horizontal swipe row (next card peeks in). Tapping the title opens
   the full list (`#listen`, `#black`, `#read`, `#headlines`, `#quotes`, `#levity`).
@@ -139,9 +141,12 @@ text downloaded, always Black Life. Levity: Karlous Miller tracker, max 2/day.
 - Cards: tall, rounded, full-bleed preview image with a tinted wash by section (Listen
   purple, Black Life gold, Read blue, Headlines red, Levity green), tiny uppercase
   "SOURCE · 3H AGO", bold white headline with an optional `highlight` word in the section color.
-  No image → a colored tile with the source name. Images load from the source URL; nothing
-  is downloaded or committed.
-- Image URLs: RSS media tags, YouTube thumbnails (hq720, falling back to hqdefault), podcast
-  artwork, Substack covers, else the article's og:image (`fetcher/fetch.py:og_image`).
-- Header photo: `site/header.jpg` (owner supplies it; a painted dusk gradient shows until then).
-  Grounding tips: the `TIPS` list at the top of `site/app.js`, one per day.
+  Images load from the source URL; nothing is downloaded or committed.
+- Images (Oct 2 rule): only an image that belongs to the item. Videos get their own YouTube
+  thumbnail (hq720, falling back to hqdefault); stories get their own og:image
+  (`fetcher/fetch.py:item_image`). Podcast episodes, Levity podcast links, Reuters, Bluesky
+  and anything without its own image get a bold gradient card in the section's color. Never
+  stock, Wikimedia, feed artwork or other unrelated pictures.
+- Opening photos: only the owner's NPS park photo set in `site/parks/`, listed in
+  `site/parks/parks.json` by `python fetcher/parks.py`; one per day. With no photos it shows
+  plain deep green, never a substitute. Grounding tips: `TIPS` at the top of `site/app.js`.

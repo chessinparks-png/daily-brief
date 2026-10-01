@@ -37,7 +37,10 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
 - `config/black_life_keywords.txt`: backup keyword list for Black Life tagging (owner edits it)
 - `site/`: the app (static `index.html`, `styles.css`, `app.js`; reads `data/latest.json`).
   One scrolling home screen in the style of the Particle news app; design notes in PLAN.md.
-  `site/header.jpg` is the owner's nature photo; grounding tips are `TIPS` in `site/app.js`.
+  Opening photos come only from the owner's NPS park set in `site/parks/` (list them with
+  `python fetcher/parks.py`); grounding tips are `TIPS` in `site/app.js`.
+- Card images: only the item's own (YouTube thumbnail for videos, og:image for stories).
+  Podcasts and anything else get a gradient card. Never use stock or unrelated photos.
 - `.github/workflows/fetch-feeds.yml`: Stage 1 test workflow (cloud check only)
 
 ## Commands
@@ -47,5 +50,6 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
 - Collect today's items: `python fetcher/prepare.py` (`--no-whisper` to skip podcast transcription)
 - After a brief is published: `python fetcher/prepare.py --mark-done`
 - Check a brief: `python fetcher/validate.py`
+- List park photos after adding them to `site/parks/`: `python fetcher/parks.py`
 - Black Life: tag by judgment of what the story is about; the keyword list is only a backup check.
 - At most 12 headlines per brief: Black Life stories first, then the rest by importance.

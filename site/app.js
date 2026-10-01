@@ -83,7 +83,7 @@
   function buildModel(b) {
     const ep = (b.episodes || []).map((e) => ({
       kind: "episode", id: e.id, title: e.title, source: e.source, published: e.published,
-      image: e.image || null, highlight: e.highlight || null, url: e.url,
+      image: isVideo(e.url) ? e.image || null : null, highlight: e.highlight || null, url: e.url,
       dek: e.takeaway, cards: e.cards || [], quotes: e.quotes || [], takeaway: e.takeaway,
       black: !!e.black_life, pill: isVideo(e.url) ? "Video" : "Podcast",
     }));
@@ -94,7 +94,7 @@
     }));
     const lev = (b.levity || []).map((l) => ({
       kind: "levity", id: l.id, title: l.title, source: l.show || l.source, published: l.published,
-      image: l.image || null, url: l.url, platform: l.platform, pill: l.platform,
+      image: isVideo(l.url) ? l.image || null : null, url: l.url, platform: l.platform, pill: l.platform,
     }));
     const quotes = ep.flatMap((e) =>
       e.quotes.map((q) => ({ ...q, episode: e }))
@@ -186,38 +186,95 @@
     return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
   }
 
-  function tipFor(d) {
-    const start = new Date(d.getFullYear(), 0, 0);
-    const day = Math.floor((d - start) / 864e5);
-    return TIPS[day % TIPS.length];
+  const dayOfYear = (d) => Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5);
+  let tipIndex = dayOfYear(new Date()) % TIPS.length;
+
+  // Park photos come only from the owner's NPS set, listed in site/parks/parks.json
+  // (run `python fetcher/parks.py` after adding photos). No set → plain green, never a stand-in.
+  async function loadParks() {
+    if (Array.isArray(window.__PARKS__)) return window.__PARKS__;
+    try {
+      const r = await fetch("parks/parks.json", { cache: "no-cache" });
+      if (r.ok) {
+        const list = await r.json();
+        return (Array.isArray(list) ? list : []).filter((p) => p && p.file)
+          .map((p) => ({ ...p, src: "parks/" + encodeURIComponent(p.file) }));
+      }
+    } catch (e) { /* no photo set yet */ }
+    return [];
   }
 
-  function heroHTML(brief, model) {
+  function openingHTML(brief, model, park) {
     const now = new Date();
     const date = brief && brief.date ? new Date(brief.date + "T12:00:00") : now;
-    const dateText = date.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
-    const nEp = model ? model.listen.length : 0;
-    const nStories = model ? model.black.filter((x) => x.kind === "headline").length + model.read.length + model.headlines.length : 0;
-    const counts = model ? ` · ${nEp} ${nEp === 1 ? "episode" : "episodes"}, ${nStories} stories` : "";
-    const photo = window.BRIEF_HEADER || "header.jpg";
+    const weekday = date.toLocaleDateString(undefined, { weekday: "long" });
+    const day = date.toLocaleDateString(undefined, { month: "long", day: "numeric" });
+    let cue = "Scroll for today's news";
+    if (model) {
+      const nEp = model.listen.length;
+      const nStories = model.black.filter((x) => x.kind === "headline").length + model.read.length + model.headlines.length;
+      cue = `${nEp} ${nEp === 1 ? "episode" : "episodes"} · ${nStories} ${nStories === 1 ? "story" : "stories"}`;
+    }
+    const photo = park
+      ? `<img class="opening__photo" src="${esc(park.src)}" alt="${esc(park.park || "National park")}" onerror="this.remove()">`
+      : "";
+    const credit = park
+      ? `<span class="opening__credit">${esc(park.park || "")}${park.credit ? " · " + esc(park.credit) : " · NPS"}</span>`
+      : "";
     return `
-      <header class="hero">
-        <div class="hero__fallback"></div>
-        <img class="hero__photo" src="${esc(photo)}" alt="" onerror="this.remove()">
-        <div class="hero__top">
-          <div class="mark"><div class="mark__logo" aria-hidden="true">BB</div><div class="mark__name">The Black Brief</div></div>
-          ${window.__SAMPLE__ ? '<span class="chip">Sample brief</span>' : ""}
+      <header class="opening" id="opening">
+        <div class="opening__bg" aria-hidden="${park ? "false" : "true"}">${photo}<div class="opening__shade"></div></div>
+        <div class="opening__inner">
+          <div class="opening__brand">The Black Brief${window.__SAMPLE__ ? ' <span class="opening__sample">Sample</span>' : ""}</div>
+          <p class="opening__greet">${greeting(now)}</p>
+          <h1 class="opening__date"><span>${esc(weekday)}</span> ${esc(day)}</h1>
+          <button class="opening__tip" type="button" data-tip aria-live="polite">
+            <span class="opening__label">Grounding tip</span>
+            <span class="opening__tiptext" data-tip-text>${esc(TIPS[tipIndex])}</span>
+            <span class="opening__again">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg>
+              Tap for another
+            </span>
+          </button>
         </div>
-        <h1 class="hero__greet">${greeting(now)}</h1>
-        <p class="hero__sub">${esc(dateText)}${esc(counts)}</p>
-        ${window.BRIEF_HEADER_CREDIT ? `<span class="hero__credit">${esc(window.BRIEF_HEADER_CREDIT)}</span>` : ""}
-      </header>
-      <aside class="tip" aria-label="Grounding tip">
-        <div class="tip__icon" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+        <div class="opening__foot">
+          ${credit}
+          <span class="opening__cue">${esc(cue)}
+            <svg width="14" height="9" viewBox="0 0 14 9" aria-hidden="true"><path d="M1.5 1.5 7 7l5.5-5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
         </div>
-        <div><div class="tip__label">Grounding tip</div><p class="tip__text">${esc(tipFor(now))}</p></div>
-      </aside>`;
+      </header>`;
+  }
+
+  function nextTip() {
+    const el = document.querySelector("[data-tip-text]");
+    if (!el) return;
+    tipIndex = (tipIndex + 1) % TIPS.length;
+    el.classList.add("is-out");
+    setTimeout(() => { el.textContent = TIPS[tipIndex]; el.classList.remove("is-out"); }, 180);
+  }
+
+  // As the news slides up, the park photo fades and the words drift away.
+  function wireOpening() {
+    const op = document.getElementById("opening");
+    if (!op) return;
+    const bg = op.querySelector(".opening__bg");
+    const inner = op.querySelector(".opening__inner");
+    const foot = op.querySelector(".opening__foot");
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let queued = false;
+    const paint = () => {
+      queued = false;
+      const p = Math.min(1, Math.max(0, scrollY / (innerHeight * 0.8)));
+      bg.style.opacity = String(1 - p);
+      if (!still) bg.style.transform = `scale(${1 + p * 0.06})`;
+      inner.style.opacity = String(Math.max(0, 1 - p * 1.7));
+      if (!still) inner.style.transform = `translateY(${-p * 48}px)`;
+      foot.style.opacity = String(Math.max(0, 1 - p * 3));
+    };
+    addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(paint); } }, { passive: true });
+    addEventListener("resize", paint);
+    paint();
   }
 
   function sectionHTML(sec, items) {
@@ -239,11 +296,14 @@
   let model = null;
   const byId = new Map();
 
+  let park = null;
+
   function renderHome() {
     if (!brief) {
-      app.innerHTML = heroHTML(null, null) + `
+      app.innerHTML = openingHTML(null, null, park) + `<div class="news">
         <div class="empty"><h2>No brief yet</h2>
-        <p>Run <b>/black-brief</b> in Claude Code on your computer. The new brief shows up here once it's pushed.</p></div>`;
+        <p>Run <b>/black-brief</b> in Claude Code on your computer. The new brief shows up here once it's pushed.</p></div></div>`;
+      wireOpening();
       return;
     }
     const failed = (brief.failed_sources || []).length
@@ -251,9 +311,10 @@
     const feed = SECTIONS.map((s) => sectionHTML(s, model[s.key])).join("");
     const written = brief.generated_at
       ? new Date(brief.generated_at).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }) : "";
-    app.innerHTML = heroHTML(brief, model) + failed + `<main class="feed">${feed}</main>` +
-      `<footer class="foot">Written ${esc(written)}. Summaries and short quotes only; tap through to the original.</footer>`;
+    app.innerHTML = openingHTML(brief, model, park) + `<div class="news">${failed}<main class="feed">${feed}</main>` +
+      `<footer class="foot">Written ${esc(written)}. Summaries and short quotes only; tap through to the original.</footer></div>`;
     wireImages(app);
+    wireOpening();
   }
 
   function renderPage(key) {
@@ -342,6 +403,7 @@
   document.addEventListener("click", (e) => {
     const open = e.target.closest("[data-open]");
     if (open) { openSheet(open.dataset.open, open.dataset.tone); return; }
+    if (e.target.closest("[data-tip]")) { nextTip(); return; }
     if (e.target.closest("[data-close]")) { closeSheet(); return; }
     if (e.target.closest("[data-back]")) {
       if (history.state && history.state.fromHome) history.back();
@@ -369,8 +431,9 @@
     else closePage();
   }
 
-  loadBrief().then((b) => {
+  Promise.all([loadBrief(), loadParks()]).then(([b, parks]) => {
     brief = b;
+    park = parks.length ? parks[dayOfYear(new Date()) % parks.length] : null;
     if (b) {
       model = buildModel(b);
       [...model.listen, ...model.black, ...model.read, ...model.headlines].forEach((i) => byId.set(i.id, i));
