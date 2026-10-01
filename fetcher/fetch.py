@@ -28,6 +28,10 @@ OUT = ROOT / "data" / "raw" / "feeds.json"
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36 DailyBrief/0.1")
+# Some hosts (e.g. Substack) 403 browser-like UAs from datacenter IPs but allow feed readers.
+ALT_UAS = ["Feedly/1.0 (+http://www.feedly.com/fetcher.html; like FeedFetcher-Google)",
+           "feedparser/6.0 +https://github.com/kurtmckee/feedparser",
+           "curl/8.5.0"]
 session = requests.Session()
 session.headers.update({"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9"})
 
@@ -83,32 +87,33 @@ def channel_id_from_html(html):
 
 
 def resolve_youtube(src, notes):
+    """Return feed URLs for every candidate channel; fetch loop keeps the first with videos."""
+    feed = "https://www.youtube.com/feeds/videos.xml?channel_id={}"
     if src.get("channel_id"):
-        return [f"https://www.youtube.com/feeds/videos.xml?channel_id={src['channel_id']}"]
+        return [feed.format(src["channel_id"])]
     cookies = {"CONSENT": "YES+1", "SOCS": "CAI"}
+    ids = []
     for h in src.get("handles", []):
         r = get(f"https://www.youtube.com/@{h}", cookies=cookies)
-        if r.status_code == 200:
-            cid = channel_id_from_html(r.text)
-            if cid:
-                notes.append(f"handle @{h} -> {cid}")
-                return [f"https://www.youtube.com/feeds/videos.xml?channel_id={cid}"]
-        notes.append(f"handle @{h}: HTTP {r.status_code}")
+        cid = channel_id_from_html(r.text) if r.status_code == 200 else None
+        notes.append(f"handle @{h} -> {cid or f'HTTP {r.status_code}'}")
+        if cid:
+            ids.append(cid)
     if src.get("search"):
         r = get("https://www.youtube.com/results",
                 params={"search_query": src["search"], "sp": "EgIQAg=="}, cookies=cookies)
-        ids = list(dict.fromkeys(re.findall(r'"channelId":"(UC[\w-]{22})"', r.text)))
-        if ids:
-            notes.append(f"search {src['search']!r} -> {ids[0]} (candidates: {', '.join(ids[:3])})")
-            return [f"https://www.youtube.com/feeds/videos.xml?channel_id={ids[0]}"]
-    return []
+        found = list(dict.fromkeys(re.findall(r'"channelId":"(UC[\w-]{22})"', r.text)))[:3]
+        notes.append(f"search {src['search']!r} -> {', '.join(found) or 'nothing'}")
+        ids += found
+    return [feed.format(i) for i in dict.fromkeys(ids)]
 
 
 def resolve_bluesky(src, notes):
     api = "https://public.api.bsky.app/xrpc"
     cands = list(src.get("handles", []))
-    if src.get("search"):
-        r = get(f"{api}/app.bsky.actor.searchActors", params={"q": src["search"], "limit": 8})
+    searches = src.get("search") or []
+    for q in [searches] if isinstance(searches, str) else searches:
+        r = get(f"{api}/app.bsky.actor.searchActors", params={"q": q, "limit": 10})
         if r.ok:
             cands += [a["handle"] for a in r.json().get("actors", [])]
     cands = list(dict.fromkeys(cands))
@@ -119,11 +124,18 @@ def resolve_bluesky(src, notes):
             profiles = r.json().get("profiles", [])
     if not profiles:
         return []
-    profiles.sort(key=lambda p: p.get("followersCount", 0), reverse=True)
+    hints = [h.lower() for h in src.get("bio_hint", [])]
+
+    def score(p):
+        bio = f"{p.get('description', '')} {p.get('displayName', '')}".lower()
+        return (any(h in bio for h in hints), p.get("followersCount", 0))
+    profiles.sort(key=score, reverse=True)
     for p in profiles[:4]:
         notes.append(f"candidate @{p['handle']} {p.get('displayName')!r} "
                      f"followers={p.get('followersCount')} bio={clean(p.get('description'), 80)!r}")
     best = next((p for p in profiles if p["handle"] in src.get("handles", [])), profiles[0])
+    if hints and not score(best)[0]:
+        notes.append("WARNING: no candidate bio matched bio_hint; set an exact handle in sources.json")
     notes.append(f"using @{best['handle']} ({best['did']})")
     return [f"https://bsky.app/profile/{best['did']}/rss"]
 
@@ -139,14 +151,38 @@ RESOLVERS = {
 # ---------- captions ----------
 
 def youtube_captions(video_id):
-    """Return (status, text). Text stays in data/raw only (never published)."""
+    """Return (status, text). Text stays in data/raw only (never published).
+    Tries youtube-transcript-api first, then yt-dlp's caption tracks."""
+    errors = []
     try:
         from youtube_transcript_api import YouTubeTranscriptApi
         snippets = YouTubeTranscriptApi().fetch(video_id, languages=["en", "en-US"])
-        parts = [f"[{int(s.start)//60}:{int(s.start)%60:02d}] {s.text}" for s in snippets]
-        return "ok", "\n".join(parts)
+        return "ok (youtube-transcript-api)", "\n".join(
+            f"[{int(s.start)//60}:{int(s.start)%60:02d}] {s.text}" for s in snippets)
     except Exception as e:  # noqa: BLE001
-        return f"fail: {type(e).__name__}: {clean(str(e), 160)}", None
+        errors.append(f"transcript-api {type(e).__name__}")
+    try:
+        import yt_dlp
+        opts = {"skip_download": True, "quiet": True, "no_warnings": True}
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
+        tracks = (info.get("subtitles") or {}).get("en") or \
+                 (info.get("automatic_captions") or {}).get("en") or []
+        url = next((t["url"] for t in tracks if t.get("ext") == "json3"), None)
+        if not url:
+            errors.append("yt-dlp: no English caption track")
+        else:
+            events = get(url).json().get("events", [])
+            lines = [f"[{e['tStartMs']//60000}:{e['tStartMs']//1000%60:02d}] "
+                     + "".join(seg.get("utf8", "") for seg in e["segs"]).strip()
+                     for e in events if e.get("segs")]
+            text = "\n".join(l for l in lines if not l.endswith("] "))
+            if text:
+                return "ok (yt-dlp)", text
+            errors.append("yt-dlp: empty caption track")
+    except Exception as e:  # noqa: BLE001
+        errors.append(f"yt-dlp {type(e).__name__}: {clean(str(e), 120)}")
+    return "fail: " + " | ".join(errors), None
 
 
 # ---------- main ----------
@@ -167,6 +203,11 @@ def fetch_source(src, limit, captions):
     for url in urls:
         try:
             r = get(url)
+            for ua in ALT_UAS:
+                if r.status_code != 403:
+                    break
+                notes.append(f"{url}: HTTP 403, retrying as {ua.split('/')[0]!r}")
+                r = get(url, headers={"User-Agent": ua})
         except Exception as e:  # noqa: BLE001
             notes.append(f"{url}: {type(e).__name__}")
             continue

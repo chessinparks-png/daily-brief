@@ -13,7 +13,11 @@
       "name": "Jemele Hill (YouTube)",
       "kind": "youtube",
       "section": "listen",
-      "handles": ["JemeleHillisUnbothered", "jemelehill", "JemeleHillUnbothered"],
+      "handles": [
+        "JemeleHillUnbothered",
+        "JemeleHillisUnbothered",
+        "jemelehill"
+      ],
       "search": "Jemele Hill Unbothered"
     },
     {
@@ -21,7 +25,10 @@
       "name": "Heather Cox Richardson (YouTube)",
       "kind": "youtube",
       "section": "listen",
-      "handles": ["HeatherCoxRichardson", "heathercoxrichardson"],
+      "handles": [
+        "HeatherCoxRichardson",
+        "heathercoxrichardson"
+      ],
       "search": "Heather Cox Richardson"
     },
     {
@@ -29,43 +36,67 @@
       "name": "Letters from an American",
       "kind": "rss",
       "section": "headlines",
-      "urls": ["https://heathercoxrichardson.substack.com/feed"]
+      "urls": [
+        "https://heathercoxrichardson.substack.com/feed",
+        "https://letters.heathercoxrichardson.com/feed"
+      ]
     },
     {
       "id": "capital-b",
       "name": "Capital B",
       "kind": "rss",
       "section": "headlines",
-      "urls": ["https://capitalbnews.org/feed/", "https://capitalbnews.org/rss/", "https://capitalbnews.org/feed.xml"]
+      "urls": [
+        "https://capitalbnews.org/feed/",
+        "https://capitalbnews.org/rss/",
+        "https://capitalbnews.org/feed.xml"
+      ]
     },
     {
       "id": "reuters",
       "name": "Reuters",
       "kind": "rss",
       "section": "headlines",
-      "urls": ["https://news.google.com/rss/search?q=site:reuters.com+when:1d&hl=en-US&gl=US&ceid=US:en"]
+      "urls": [
+        "https://news.google.com/rss/search?q=site:reuters.com+when:1d&hl=en-US&gl=US&ceid=US:en"
+      ]
     },
     {
       "id": "philip-lewis",
       "name": "Philip Lewis (Bluesky)",
       "kind": "bluesky",
       "section": "headlines",
-      "handles": ["philiplewis.bsky.social"],
-      "search": "Philip Lewis"
+      "handles": [],
+      "search": [
+        "Philip Lewis",
+        "Phil Lewis",
+        "Phil_Lewis_",
+        "Philip Lewis HuffPost"
+      ],
+      "bio_hint": [
+        "huffpost",
+        "huff post",
+        "huffington",
+        "senior front page editor"
+      ]
     },
     {
       "id": "the-atlantic",
       "name": "The Atlantic",
       "kind": "rss",
       "section": "headlines",
-      "urls": ["https://www.theatlantic.com/feed/all/"]
+      "urls": [
+        "https://www.theatlantic.com/feed/all/"
+      ]
     },
     {
       "id": "washington-informer",
       "name": "Washington Informer",
       "kind": "rss",
       "section": "headlines",
-      "urls": ["https://www.washingtoninformer.com/feed/"]
+      "urls": [
+        "https://www.washingtoninformer.com/feed/"
+      ]
     }
   ]
 }
