@@ -19,8 +19,11 @@ never write a summary from a headline alone.
 
 ## 3. Write `data/latest.json`
 It must match `config/brief.schema.json`. Keep the items in `brief_input.json` order.
-Every item appears exactly once: `section: "listen"` → `episodes`,
-`section: "levity"` → `levity`, everything else → `headlines`. Copy `id`, `source`, `published` and `link` (as `url`)
+Every episode and Levity item appears exactly once: `section: "listen"` → `episodes`,
+`section: "levity"` → `levity`. Everything else is a headline, and **at most 12 headlines**
+make the brief: first every Black Life story, then the rest in order of importance (how
+much the news matters to the owner and how many people it affects, not how recent it is).
+If more than 12 are Black Life, keep the 12 most important. Copy `id`, `source`, `published` and `link` (as `url`)
 exactly. Top level: `date` (today, YYYY-MM-DD), `generated_at` (now, ISO 8601 with
 timezone), `since` (from brief_input.json), `failed_sources` (the `source` names in
 brief_input.json's `failed_sources`).
@@ -39,7 +42,7 @@ brief_input.json's `failed_sources`).
 - `title`: the item title.
 - Episodes with `summarize: false`: `cards: []`, `quotes: []`, `takeaway: null`.
 
-**Headlines**:
+**Headlines** (the 12 you picked, in that order):
 - `headline`: the item title (drop a trailing " - Reuters").
 - `summary`: `summarize: true` → 1–2 sentences, max 60 words, your own words.
   `summarize: false` → `null`.

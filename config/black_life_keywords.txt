@@ -1,4 +1,4 @@
-# Black Life keywords: a backup check for /daily-brief.
+# Black Life keywords: a backup check for /black-brief.
 # Stories are tagged Black Life by judgment of what they're about. If a story mentions
 # one of these words but wasn't tagged, the validator lists it for a second look.
 # One word or phrase per line. Matching ignores upper/lower case. Lines starting with # are notes.

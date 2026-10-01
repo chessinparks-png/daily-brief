@@ -6,7 +6,7 @@ Pages + Access (free plans), open-source libraries, local Whisper.
 ## Architecture
 
 ```
- Your computer — you run /daily-brief in Claude Code each morning
+ Your computer — you run /black-brief in Claude Code each morning
    1. fetcher/fetch.py   RSS / YouTube RSS / Bluesky RSS / Google News RSS
                          YouTube captions + Substack work from a home connection
    2. Whisper            faster-whisper transcribes new Native Land Pod episodes locally
@@ -27,7 +27,7 @@ Pages + Access (free plans), open-source libraries, local Whisper.
    Test every source, report results, flag failures + free fixes. ✅ approved
 2. **Transcripts** (runs locally) ✅ approved — — YouTube captions, Whisper for Native Land Pod,
    skip Shorts and not-yet-aired live events, "new since last brief" window, dedupe.
-3. **/daily-brief command** ← *in review* — — `.claude/commands/daily-brief.md` + JSON schema
+3. **/black-brief command** ← *in review* — `.claude/commands/black-brief.md` + JSON schema
    + validator; Black Life tagging + `config/black_life_keywords.txt` (editable).
 4. **Web app** — static HTML/CSS/JS (no build step), 4 tabs, mobile-first,
    PWA manifest + service worker, dark mode, deployed to Cloudflare Pages
@@ -57,7 +57,7 @@ approximate because ads are inserted per listener.
 - No paid APIs, no API keys. Summaries are written by Claude Code when you run the command.
 
 ## Decisions (Stage 1 review)
-- `/daily-brief` runs locally on your computer (fixes YouTube captions and Substack).
+- `/black-brief` runs locally on your computer (fixes YouTube captions and Substack).
 - The repo stays private. The app is hosted on Cloudflare Pages and locked to your email
   with Cloudflare Access.
 - Reuters: headline + link only, no summary (`"summarize": false` in sources.json).
@@ -120,3 +120,9 @@ Posting counts, Aug 2 – Oct 1, 2026 (60 days):
 Bluesky: Harriot and Jemele Hill active (added, headline + link, max 5/day). Cobb last
 posted May 21, Cross Aug 9: not added. Black Perspectives (AAIHS): ~weekly, full article
 text downloaded, always Black Life. Levity: Karlous Miller tracker, max 2/day.
+
+## Decisions (Stage 3 review)
+- App name: The Black Brief (folder and repo stay `daily-brief`); command is `/black-brief`.
+- The "Laughs" section is called Levity.
+- At most 12 headlines per brief: Black Life stories first, then the rest by importance.
+  Headlines left out are still marked as covered, so they don't come back the next day.

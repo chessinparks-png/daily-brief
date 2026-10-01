@@ -10,7 +10,7 @@
      Richardson's Substack post that only links to her video).
 
 Outputs (all in data/raw/, gitignored, never published):
-  brief_input.json   the items for /daily-brief to summarize
+  brief_input.json   the items for /black-brief to summarize
   text/<source>/     full transcripts and article text, one .txt per item
   state.json         when the last brief ran, links already briefed, items on hold
 

@@ -3,13 +3,16 @@
 
 Errors (exit 1, must be fixed):
   - doesn't match config/brief.schema.json
-  - an item from data/raw/brief_input.json is missing, repeated, or has the wrong link
+  - an episode or Levity item from data/raw/brief_input.json is missing, or any item is
+    repeated or has the wrong link
+  - fewer than 12 headlines while some were left out, or Black Life headlines not listed first
   - a summary written for a headline-only item, or a summarizable item left empty
   - a quote that isn't word-for-word in the transcript, is too long, or has the wrong
     timestamp / link
   - a summary that copies 12+ words in a row from the source (quotes aside)
 Warnings (review, then decide):
-  - an item not tagged Black Life whose text matches config/black_life_keywords.txt
+  - an item not tagged Black Life (or a headline left out) whose text matches
+    config/black_life_keywords.txt
 
 Usage: python fetcher/validate.py [path, default data/latest.json]
 """
@@ -32,6 +35,7 @@ TIMESTAMP_SLACK = 5       # seconds
 SUMMARY_MAX_WORDS = 60
 CARD_MAX_WORDS = 70
 KEYWORD_SCAN_CHARS = 3000
+MAX_HEADLINES = 12        # per brief; Black Life first, then the rest by importance
 
 
 def words(text):
@@ -111,6 +115,15 @@ def copied_run(text, src_grams):
     return None
 
 
+def text_of(item):
+    return (ROOT / item["text_file"]).read_text() if item.get("text_file") else ""
+
+
+def keyword_hits(text, keywords):
+    text = text.lower()
+    return [k for k in keywords if re.search(rf"(?<!\w){re.escape(k)}(?!\w)", text)]
+
+
 def main():
     brief = json.loads((Path(sys.argv[1]) if len(sys.argv) > 1 else BRIEF).read_text())
     inp = json.loads(INPUT.read_text())
@@ -134,9 +147,27 @@ def main():
             errors.append(f"{iid}: not in brief_input.json")
         elif len(where) > 1:
             errors.append(f"{iid}: appears {len(where)} times")
+    headlines = brief["headlines"]
+    has_other = any(not h["black_life"] for h in headlines)
     for iid, it in wanted.items():
-        if iid not in placed:
-            errors.append(f"{it['source']}: missing item {it['title'][:60]!r} ({iid})")
+        if iid in placed:
+            continue
+        label = f"{it['source']}: {it['title'][:60]!r}"
+        if it["section"] in ("listen", "levity"):
+            errors.append(f"{label}: missing ({iid})")
+        elif len(headlines) < MAX_HEADLINES:
+            errors.append(f"{label}: left out, but the brief has only {len(headlines)} of "
+                          f"{MAX_HEADLINES} headlines ({iid})")
+        elif it.get("black_life") and has_other:
+            errors.append(f"{label}: always Black Life, so it goes ahead of non-Black Life headlines")
+        elif has_other:
+            hits = keyword_hits(f"{it['title']} {text_of(it)[:KEYWORD_SCAN_CHARS]}", keywords)
+            if hits:
+                warnings.append(f"{label}: left out but mentions {', '.join(hits[:4])}. If it's a Black "
+                                f"Life story, it goes ahead of the non-Black Life headlines.")
+    first_other = next((i for i, h in enumerate(headlines) if not h["black_life"]), len(headlines))
+    if any(h["black_life"] for h in headlines[first_other:]):
+        errors.append("headlines: put every Black Life headline before the others")
 
     for section in ("episodes", "headlines", "levity"):
         for out in brief[section]:
@@ -150,7 +181,7 @@ def main():
                 err(f"belongs in {expected}")
             if out["url"] != it["link"]:
                 err(f"url should be {it['link']}")
-            src = (ROOT / it["text_file"]).read_text() if it.get("text_file") else ""
+            src = text_of(it)
             if section == "levity":
                 continue  # title, show and link only; the schema allows nothing else
             if it.get("black_life") and not out["black_life"]:
@@ -191,8 +222,7 @@ def main():
                         err(f"copies the source word-for-word ({run!r}); put it in your own words")
 
             if not out["black_life"]:
-                scan = f"{it['title']} {src[:KEYWORD_SCAN_CHARS]}".lower()
-                hits = [k for k in keywords if re.search(rf"(?<!\w){re.escape(k)}(?!\w)", scan)]
+                hits = keyword_hits(f"{it['title']} {src[:KEYWORD_SCAN_CHARS]}", keywords)
                 if hits:
                     warnings.append(f"{label}: not tagged Black Life but mentions "
                                     f"{', '.join(hits[:4])}. Tag it if that's what the story is about.")

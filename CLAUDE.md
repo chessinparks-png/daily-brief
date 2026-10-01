@@ -8,7 +8,7 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
   starting the next.
 - The owner is a beginner. Explain steps plainly and give exact commands to copy.
 - Everything must cost $0: free tools and open-source libraries only, no paid APIs or
-  API keys. Summaries are written by Claude Code itself during `/daily-brief`.
+  API keys. Summaries are written by Claude Code itself during `/black-brief`.
 
 ## Hard rules
 - Publish only summaries and short quotes (at most 2 per episode). Never commit or
@@ -33,7 +33,7 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
 - `fetcher/validate.py`: Stage 3. Checks `data/latest.json` against `config/brief.schema.json`
   plus the publishing rules (quotes word-for-word with correct timestamps, no summaries for
   headline-only items, no copied passages); warns on Black Life keyword matches left untagged
-- `.claude/commands/daily-brief.md`: the `/daily-brief` command (collect → write → validate → publish)
+- `.claude/commands/black-brief.md`: the `/black-brief` command (collect → write → validate → publish)
 - `config/black_life_keywords.txt`: backup keyword list for Black Life tagging (owner edits it)
 - `.github/workflows/fetch-feeds.yml`: Stage 1 test workflow (cloud check only)
 
@@ -45,3 +45,4 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
 - After a brief is published: `python fetcher/prepare.py --mark-done`
 - Check a brief: `python fetcher/validate.py`
 - Black Life: tag by judgment of what the story is about; the keyword list is only a backup check.
+- At most 12 headlines per brief: Black Life stories first, then the rest by importance.

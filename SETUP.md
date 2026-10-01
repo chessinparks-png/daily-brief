@@ -91,4 +91,4 @@ cd ~/daily-brief
 source .venv/bin/activate     # Windows: .venv\Scripts\Activate.ps1
 claude
 ```
-then type `/daily-brief`.
+then type `/black-brief`.
