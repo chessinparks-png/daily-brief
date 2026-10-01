@@ -18,7 +18,7 @@ Pages + Access (free plans), open-source libraries, local Whisper.
  Private GitHub repo  ──►  Cloudflare Pages (free) builds the static site on push
                            Cloudflare Access (free Zero Trust plan): only your
                            email can sign in (one-time code sent to your inbox)
-   PWA: add to home screen · Tabs: Listen · Headlines · Black Life · Quotes
+   PWA: add to home screen · Tabs: Listen · Headlines · Black Life · Quotes · small Laughs section
 ```
 
 ## Stages (each waits for your approval)
@@ -106,3 +106,17 @@ Substack 403s the same IPs. Both work from a home internet connection.
 ## Decisions (Stage 3)
 - Black Life is tagged by judgment of what a story is about; `config/black_life_keywords.txt`
   is a backup that makes the validator flag untagged matches for a second look.
+
+## Source changes (Oct 1, 2026, before Stage 3 approval)
+Removed The Atlantic and Heather Cox Richardson's YouTube channel (Letters from an American stays).
+Posting counts, Aug 2 – Oct 1, 2026 (60 days):
+
+| Writer | Where | Pieces | Treatment |
+|---|---|---|---|
+| Michael Harriot | ContrabandCamp (Substack): 9 newsletters + 10 podcasts | 19 | regular; 13 of 19 paid-only → headline + link |
+| Jelani Cobb | The New Yorker | 1 | only when new (14-day look-back) |
+| Tiffany Cross | Substack (last post July 9); ACross Generations podcast ended Jan 2025 | 0 | only when new |
+
+Bluesky: Harriot and Jemele Hill active (added, headline + link, max 5/day). Cobb last
+posted May 21, Cross Aug 9: not added. Black Perspectives (AAIHS): ~weekly, full article
+text downloaded, always Black Life. Laughs: Karlous Miller tracker, max 2/day.

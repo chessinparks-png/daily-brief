@@ -125,7 +125,7 @@ def main():
                 if k.strip() and not k.lstrip().startswith("#")]
     wanted = {it["id"]: it for it in inp["items"]}
     placed = {}
-    for section in ("episodes", "headlines"):
+    for section in ("episodes", "headlines", "laughs"):
         for out in brief[section]:
             placed.setdefault(out["id"], []).append(section)
 
@@ -138,19 +138,23 @@ def main():
         if iid not in placed:
             errors.append(f"{it['source']}: missing item {it['title'][:60]!r} ({iid})")
 
-    for section in ("episodes", "headlines"):
+    for section in ("episodes", "headlines", "laughs"):
         for out in brief[section]:
             it = wanted.get(out["id"])
             if not it:
                 continue
             label = f"{it['source']}: {it['title'][:50]!r}"
             err = lambda msg: errors.append(f"{label}: {msg}")  # noqa: E731
-            expected = "episodes" if it["section"] == "listen" else "headlines"
+            expected = {"listen": "episodes", "laughs": "laughs"}.get(it["section"], "headlines")
             if section != expected:
                 err(f"belongs in {expected}")
             if out["url"] != it["link"]:
                 err(f"url should be {it['link']}")
             src = (ROOT / it["text_file"]).read_text() if it.get("text_file") else ""
+            if section == "laughs":
+                continue  # title, show and link only; the schema allows nothing else
+            if it.get("black_life") and not out["black_life"]:
+                err("this source always counts as Black Life: set black_life to true")
 
             if section == "episodes":
                 written = out["cards"] + ([out["takeaway"]] if out["takeaway"] else [])

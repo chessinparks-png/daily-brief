@@ -20,7 +20,7 @@ never write a summary from a headline alone.
 ## 3. Write `data/latest.json`
 It must match `config/brief.schema.json`. Keep the items in `brief_input.json` order.
 Every item appears exactly once: `section: "listen"` → `episodes`,
-everything else → `headlines`. Copy `id`, `source`, `published` and `link` (as `url`)
+`section: "laughs"` → `laughs`, everything else → `headlines`. Copy `id`, `source`, `published` and `link` (as `url`)
 exactly. Top level: `date` (today, YYYY-MM-DD), `generated_at` (now, ISO 8601 with
 timezone), `since` (from brief_input.json), `failed_sources` (the `source` names in
 brief_input.json's `failed_sources`).
@@ -44,6 +44,9 @@ brief_input.json's `failed_sources`).
 - `summary`: `summarize: true` → 1–2 sentences, max 60 words, your own words.
   `summarize: false` → `null`.
 
+**Laughs** (`section: "laughs"`): copy `id`, `source`, `title`, `show`, `platform`,
+`published` and `link` (as `url`). No summary, nothing else.
+
 **For every summary, card and takeaway:** use only facts in the source text. Write in your
 own words: never copy 12 or more words in a row from the source (quotes are the only
 exception). Be neutral and plain; no hype.
@@ -53,7 +56,9 @@ when Black people, communities, culture, history or institutions are central to 
 story, or it's about an issue (voting rights, civil rights, policing, HBCUs, Black
 farmers, the racial wealth gap…) told through its effect on Black Americans. Don't tag
 a story just because a Black person appears in it, or because a single passing sentence
-mentions race. `config/black_life_keywords.txt` is a backup check (step 4).
+mentions race. Items with `"black_life": true` in brief_input.json come from a source that
+always counts (Black Perspectives): tag them `true`. `config/black_life_keywords.txt` is a
+backup check (step 4).
 
 ## 4. Validate
 Run `.venv/bin/python fetcher/validate.py`.
@@ -74,5 +79,5 @@ git push
 Never add anything from `data/raw/`. If `git push` fails, say so and don't run `--mark-done`.
 
 ## 6. Report
-A short summary for the owner: the number of episodes and headlines, how many are tagged
+A short summary for the owner: the number of episodes, headlines and laughs, how many are tagged
 Black Life, anything skipped or held for retry, and any failed sources.

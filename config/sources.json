@@ -1,5 +1,5 @@
 {
-  "_comment": "Edit this file to add/remove sources. 'kind' decides how the fetcher resolves the feed. Resolved IDs are cached in config/resolved.json.",
+  "_comment": "Edit this file to add/remove sources. 'kind' decides how the fetcher reads the source. 'cadence': 'only_when_new' looks back 14 days (for writers who publish less than weekly). 'black_life': 'always' tags every item Black Life.",
   "sources": [
     {
       "id": "native-land-pod",
@@ -22,19 +22,6 @@
       ],
       "search": "Jemele Hill Unbothered",
       "channel_id": "UC25GHmlU1I-zbNcZe7a-aiQ",
-      "summarize": true
-    },
-    {
-      "id": "hcr-yt",
-      "name": "Heather Cox Richardson (YouTube)",
-      "kind": "youtube",
-      "section": "listen",
-      "handles": [
-        "HeatherCoxRichardson",
-        "heathercoxrichardson"
-      ],
-      "search": "Heather Cox Richardson",
-      "channel_id": "UCnbKOlm6H9njgmN-Yil90Rg",
       "summarize": true
     },
     {
@@ -96,16 +83,6 @@
       "_note": "Posts are one-line news shares: headline + link only (owner's choice, Stage 2 review)."
     },
     {
-      "id": "the-atlantic",
-      "name": "The Atlantic",
-      "kind": "rss",
-      "section": "headlines",
-      "urls": [
-        "https://www.theatlantic.com/feed/all/"
-      ],
-      "summarize": true
-    },
-    {
       "id": "washington-informer",
       "name": "Washington Informer",
       "kind": "rss",
@@ -116,6 +93,87 @@
       "fetch_full_text": true,
       "_note": "The feed only has a short excerpt, so prepare.py downloads each article page.",
       "summarize": true
+    },
+    {
+      "id": "black-perspectives",
+      "name": "Black Perspectives (AAIHS)",
+      "kind": "rss",
+      "section": "headlines",
+      "urls": [
+        "https://www.aaihs.org/feed/"
+      ],
+      "fetch_full_text": true,
+      "black_life": "always",
+      "_note": "Feed has excerpts only, so each article page is downloaded.",
+      "summarize": true
+    },
+    {
+      "id": "michael-harriot",
+      "name": "Michael Harriot (ContrabandCamp)",
+      "kind": "substack",
+      "section": "headlines",
+      "url": "https://www.contrabandcamp.com",
+      "author": "Michael Harriot",
+      "_note": "~19 posts in 60 days (Aug-Sep 2026). Free podcasts are transcribed; paid-only posts are headline + link.",
+      "summarize": true
+    },
+    {
+      "id": "jelani-cobb",
+      "name": "Jelani Cobb (The New Yorker)",
+      "kind": "newyorker",
+      "section": "headlines",
+      "url": "https://www.newyorker.com/contributors/jelani-cobb",
+      "cadence": "only_when_new",
+      "_note": "1 piece in 60 days (Aug-Sep 2026).",
+      "summarize": true
+    },
+    {
+      "id": "tiffany-cross",
+      "name": "Tiffany D. Cross",
+      "kind": "substack",
+      "section": "headlines",
+      "url": "https://tiffanydcross.substack.com",
+      "cadence": "only_when_new",
+      "_note": "0 posts in 60 days (last: July 9, 2026). Her ACross Generations podcast ended Jan 2025.",
+      "summarize": true
+    },
+    {
+      "id": "michael-harriot-bsky",
+      "name": "Michael Harriot (Bluesky)",
+      "kind": "bluesky",
+      "section": "headlines",
+      "handles": [
+        "michaelharriot.bsky.social"
+      ],
+      "max_items": 5,
+      "summarize": false,
+      "_note": "Headline + link only, like Philip Lewis."
+    },
+    {
+      "id": "jemele-hill-bsky",
+      "name": "Jemele Hill (Bluesky)",
+      "kind": "bluesky",
+      "section": "headlines",
+      "handles": [
+        "jemelehill.bsky.social"
+      ],
+      "max_items": 5,
+      "summarize": false,
+      "_note": "Headline + link only, like Philip Lewis."
+    },
+    {
+      "id": "karlous-miller",
+      "name": "Karlous Miller",
+      "kind": "people_search",
+      "section": "laughs",
+      "person": "Karlous Miller",
+      "own_shows": [
+        "85 South",
+        "karlous miller"
+      ],
+      "max_items": 2,
+      "summarize": false,
+      "_note": "Searches YouTube + Apple Podcasts for the last 7 days. Title, show and link only."
     }
   ]
 }

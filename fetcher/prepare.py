@@ -44,6 +44,7 @@ OVERLAP_HOURS = 6       # re-check a little before the last brief; seen links st
 CAPTION_WAIT_DAYS = 2   # retry missing captions for this long before giving up
 PENDING_DAYS = 7        # drop held-back items after this long
 SEEN_DAYS = 30          # forget briefed links after this long
+ONLY_WHEN_NEW_DAYS = 14  # look-back for sources with "cadence": "only_when_new"
 MIN_TEXT_CHARS = 200    # less text than this is "headline only": never summarized
 DEFAULT_MAX_ITEMS = 10  # per source, unless sources.json sets "max_items"
 
@@ -87,17 +88,6 @@ def write_text(item, text):
     path.write_text(text)
     item["text_file"] = str(path.relative_to(fetch.ROOT))
     item["text_chars"] = len(text)
-
-
-def article_text(url):
-    """Main text of an article page (for feeds that only carry an excerpt). Stays in data/raw."""
-    import trafilatura
-    try:
-        r = fetch.get(url)
-        time.sleep(1)
-        return (trafilatura.extract(r.text, include_comments=False, include_tables=False) or "") if r.ok else ""
-    except Exception:  # noqa: BLE001
-        return ""
 
 
 # ---------- transcripts ----------
@@ -166,17 +156,24 @@ def collect(args):
     # Listen sources first, so a headline that repeats an episode is the one dropped.
     for src in sorted(sources, key=lambda s: s["section"] != "listen"):
         print(f"- {src['name']}", flush=True)
+        if src["kind"] == "people_search":  # don't repeat appearances already shown
+            src["_already_shown"] = list(state.get("shown_titles", {}))
         res = fetch.fetch_source(src, 50, captions=False)
         if not res["ok"]:
             failed.append({"source": src["name"], "notes": res["notes"]})
             print("  FAILED: " + "; ".join(res["notes"][-2:]))
             continue
+        src_since = since
+        if src.get("cadence") == "only_when_new":  # rare writers: don't miss a piece on a skipped day
+            src_since = min(since, t0 - timedelta(days=ONLY_WHEN_NEW_DAYS))
+        if src["kind"] == "people_search":  # its own 7-day rule; shown titles stop repeats
+            src_since = t0 - timedelta(days=7)
         fresh = []
         for it in res["items"]:
             link, pub = it["link"], parse(it["published"])
             if link in state["seen"]:
                 continue
-            if link in state["pending"] or pub is None or pub >= since:
+            if link in state["pending"] or pub is None or pub >= src_since:
                 fresh.append(it)
         fresh.sort(key=lambda it: it["published"] or "", reverse=True)
         cap = src.get("max_items", DEFAULT_MAX_ITEMS)
@@ -188,9 +185,15 @@ def collect(args):
 
         for it in fresh:
             item = {"id": key(it["link"]), "source_id": src["id"], "source": src["name"],
-                    "section": src["section"], "title": it["title"], "link": it["link"],
-                    "published": it["published"]}
+                    "section": it.get("section", src["section"]), "title": it["title"],
+                    "link": it["link"], "published": it["published"]}
+            if src.get("black_life") == "always":
+                item["black_life"] = True
             skip = lambda reason: skipped.append({**item, "reason": reason})  # noqa: E731
+
+            if re.fullmatch(r"https?://\S+", it["title"].strip()):
+                skip("post is only a link")
+                continue
 
             dup = seen_titles.get(norm_title(it["title"]))
             if dup:
@@ -216,7 +219,13 @@ def collect(args):
                 else:
                     write_text(item, text)
 
-            elif src["kind"] == "podcast":
+            elif src["kind"] == "people_search":
+                item.update(show=it["show"], platform=it["platform"], status="link_only")
+
+            elif it.get("paid_only"):
+                item.update(status="headline_only", note="paid subscribers only")
+
+            elif src["kind"] == "podcast" or it.get("audio_url"):
                 item.update(audio_url=it.get("audio_url"), duration=it.get("duration"))
                 cached = TEXT_DIR / src["id"] / f"{item['id']}.txt"
                 if cached.exists():
@@ -235,7 +244,7 @@ def collect(args):
             else:
                 text = it.get("content") or it.get("summary") or ""
                 if src.get("fetch_full_text"):
-                    full = article_text(it["link"])
+                    full = fetch.article_text(it["link"])
                     if len(full) > len(text):
                         text = full
                     else:
@@ -293,9 +302,14 @@ def mark_done():
     for it in done:
         state["seen"][it["link"]] = data["collected_at"]
         state["pending"].pop(it["link"], None)
+    shown = state.setdefault("shown_titles", {})  # Laughs: catch the same episode under a new link
+    for it in data["items"]:
+        if it["section"] == "laughs":
+            shown[it["title"]] = data["collected_at"]
     state["last_brief_at"] = data["collected_at"]
     cutoff = now() - timedelta(days=SEEN_DAYS)
     state["seen"] = {k: v for k, v in state["seen"].items() if parse(v) > cutoff}
+    state["shown_titles"] = {k: v for k, v in shown.items() if parse(v) > cutoff}
     save_state(state)
     print(f"Marked {len(done)} items as briefed. Next brief starts from {data['collected_at'][:16]} UTC.")
     return 0

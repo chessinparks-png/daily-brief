@@ -16,7 +16,7 @@ import json
 import re
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import feedparser
@@ -153,6 +153,104 @@ RESOLVERS = {
 }
 
 
+# ---------- item sources: read posts directly (no RSS feed) ----------
+
+RECENT_DAYS = 14  # only download full text for posts this new
+
+
+def _recent(published):
+    return published and published >= (datetime.now(timezone.utc) - timedelta(days=RECENT_DAYS)).isoformat()
+
+
+def article_text(url):
+    """Main text of an article page. Stays in data/raw, never published."""
+    import trafilatura
+    try:
+        r = get(url)
+        time.sleep(1)
+        return (trafilatura.extract(r.text, include_comments=False, include_tables=False) or "") if r.ok else ""
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def items_substack(src, limit, notes):
+    """Substack archive API: gives author, post type and whether a post is free."""
+    base = src["url"].rstrip("/")
+    r = get(f"{base}/api/v1/archive", params={"sort": "new", "limit": 50})
+    r.raise_for_status()
+    items = []
+    for post in r.json():
+        bylines = [b["name"] for b in post.get("publishedBylines", [])]
+        if src.get("author") and not any(src["author"].lower() in b.lower() for b in bylines):
+            continue
+        published = datetime.fromisoformat(post["post_date"].replace("Z", "+00:00")).isoformat()
+        free = post.get("audience") == "everyone"
+        item = {"title": post["title"], "link": post["canonical_url"], "published": published,
+                "summary": clean(post.get("subtitle") or post.get("description"), 400),
+                "post_type": post.get("type"), "paid_only": not free}
+        if free and post.get("type") == "podcast" and post.get("podcast_url"):
+            item.update(section="listen", audio_url=post["podcast_url"],
+                        duration=post.get("podcast_duration"))
+        elif free and _recent(published):
+            body = get(f"{base}/api/v1/posts/{post['slug']}")
+            if body.ok:
+                item["content"] = clean(body.json().get("body_html"), 10**6)
+        items.append(item)
+        if len(items) >= limit:
+            break
+    paid = sum(i["paid_only"] for i in items)
+    if paid:
+        notes.append(f"{paid} of {len(items)} posts are for paid subscribers (headline + link only)")
+    return items
+
+
+def items_newyorker(src, limit, notes):
+    """A New Yorker contributor page lists their articles with dates."""
+    r = get(src["url"])
+    r.raise_for_status()
+    m = re.search(r"window\.__PRELOADED_STATE__ = (\{.*?\});</script>", r.text, re.S)
+    found = []
+
+    def walk(o):
+        if isinstance(o, dict):
+            if str(o.get("url", "")).startswith("/") and o.get("date") and o.get("dangerousHed"):
+                found.append(o)
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+    walk(json.loads(m.group(1)) if m else {})
+    items = []
+    for o in list({o["url"]: o for o in found}.values())[:limit]:
+        try:
+            published = datetime.strptime(o["date"], "%B %d, %Y").replace(tzinfo=timezone.utc).isoformat()
+        except ValueError:
+            published = None
+        link = "https://www.newyorker.com" + o["url"]
+        item = {"title": clean(o["dangerousHed"]), "link": link, "published": published,
+                "summary": clean(o.get("dangerousDek"), 400)}
+        if _recent(published):
+            item["content"] = article_text(link)
+        items.append(item)
+    return items
+
+
+def items_people_search(src, limit, notes):
+    import laughs
+    picked, rejected = laughs.find(src["person"], src.get("own_shows", []),
+                                   already_shown=src.get("_already_shown", ()), limit=src.get("max_items", 2))
+    notes.append(f"{len(picked)} picked, {sum(r['reason'] != 'older than 7 days' for r in rejected)} "
+                 f"recent candidates rejected")
+    return [{"title": c["title"], "link": c["link"], "show": c["show"], "platform": c["platform"],
+             "published": (datetime.now(timezone.utc) - timedelta(days=c["age_days"])).isoformat(),
+             "summary": ""} for c in picked]
+
+
+ITEM_SOURCES = {"substack": items_substack, "newyorker": items_newyorker,
+                "people_search": items_people_search}
+
+
 # ---------- captions ----------
 
 def youtube_captions(video_id):
@@ -198,6 +296,15 @@ def fetch_source(src, limit, captions):
     notes = []
     result = {"id": src["id"], "name": src["name"], "kind": src["kind"],
               "section": src["section"], "ok": False, "items": [], "notes": notes}
+    if src["kind"] in ITEM_SOURCES:
+        try:
+            items = ITEM_SOURCES[src["kind"]](src, limit, notes)
+        except Exception as e:  # noqa: BLE001
+            notes.append(f"error: {type(e).__name__}: {clean(str(e), 150)}")
+            return result
+        result.update(ok=True, feed_url=src.get("url") or src["kind"], feed_title=src["name"],
+                      total_entries=len(items), items=items)
+        return result
     try:
         urls = RESOLVERS[src["kind"]](src, notes)
     except Exception as e:  # noqa: BLE001
@@ -268,6 +375,10 @@ def report(results):
             lines.append(f"      {it['link']}")
             if it.get("summary"):
                 lines.append(f"      summary: {it['summary'][:160]}")
+            if it.get("show"):
+                lines.append(f"      show: {it['show']} ({it['platform']})")
+            if it.get("paid_only"):
+                lines.append("      paid subscribers only: headline + link")
             if "audio_url" in it:
                 lines.append(f"      audio: {it['audio_url']}  duration: {it.get('duration')}")
             if "captions_status" in it:
