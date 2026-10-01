@@ -26,7 +26,7 @@ Pages + Access (free plans), open-source libraries, local Whisper.
 1. **Feed fetcher** — `config/sources.json`, `fetcher/fetch.py`, test workflow.
    Test every source, report results, flag failures + free fixes. ✅ approved
 2. **Transcripts** (runs locally) — YouTube captions, Whisper for Native Land Pod,
-   skip Shorts and not-yet-aired live events, "new since last brief" window, dedupe. ← *next*
+   skip Shorts and not-yet-aired live events, "new since last brief" window, dedupe. ← *in review*
 3. **/daily-brief command** — `.claude/commands/daily-brief.md` + JSON schema
    + validator; Black Life tagging + `config/black_life_keywords.txt` (editable).
 4. **Web app** — static HTML/CSS/JS (no build step), 4 tabs, mobile-first,
@@ -76,3 +76,20 @@ Pages + Access (free plans), open-source libraries, local Whisper.
 **Blocker for Stage 2:** YouTube blocks caption fetches from GitHub's datacenter IPs
 ("Sign in to confirm you're not a bot") for both youtube-transcript-api and yt-dlp.
 Substack 403s the same IPs. Both work from a home internet connection.
+
+## Stage 2 design (`fetcher/prepare.py`)
+- **Window:** items published since the last brief (minus 6 h overlap); 36 h on the
+  first run; never more than 3 days back. Links already briefed are remembered for
+  30 days in `data/raw/state.json`, so nothing repeats.
+- **Cap:** newest 10 items per source (set `"max_items"` in sources.json to change).
+- **YouTube:** Shorts skipped. Videos with no captions yet (upcoming live events,
+  streams still processing) are held and retried on later runs for up to 2 days.
+- **Native Land Pod:** audio downloaded, transcribed locally with faster-whisper
+  (`small.en`, CPU), audio deleted; transcripts cached so reruns are instant.
+- **Dedupe:** same link, or same title as an earlier item (listen sources win, so
+  HCR's "click here" Substack post is dropped in favor of her video).
+- **Headline-only:** Reuters, and any item with under 200 characters of text, is
+  marked `summarize: false`; Stage 3 shows headline + link only.
+- **Output:** `data/raw/brief_input.json` (item list) + `data/raw/text/<source>/<id>.txt`
+  (full text with `[m:ss]` timestamps). All gitignored.
+- `--mark-done` is run after a brief is published; it advances the window.

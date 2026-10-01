@@ -21,8 +21,12 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
 ## Layout
 - `config/sources.json`: sources and their pinned feed IDs
 - `fetcher/fetch.py`: fetches all sources → `data/raw/feeds.json` plus a printed report
+- `fetcher/prepare.py`: Stage 2. New items since the last brief, captions + Whisper
+  transcripts, dedupe → `data/raw/brief_input.json` and `data/raw/text/` (full text, never published)
 - `.github/workflows/fetch-feeds.yml`: Stage 1 test workflow (cloud check only)
 
 ## Commands
 - Setup: see `SETUP.md`
 - Test the fetcher: `python fetcher/fetch.py --limit 2`
+- Collect today's items: `python fetcher/prepare.py` (`--no-whisper` to skip podcast transcription)
+- After a brief is published: `python fetcher/prepare.py --mark-done`

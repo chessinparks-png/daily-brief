@@ -167,7 +167,9 @@ def youtube_captions(video_id):
         errors.append(f"transcript-api {type(e).__name__}")
     try:
         import yt_dlp
-        opts = {"skip_download": True, "quiet": True, "no_warnings": True}
+        class _Quiet:  # keep yt-dlp from printing errors outside the report
+            debug = info = warning = error = staticmethod(lambda msg: None)
+        opts = {"skip_download": True, "quiet": True, "no_warnings": True, "logger": _Quiet}
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
         tracks = (info.get("subtitles") or {}).get("en") or \
@@ -231,6 +233,8 @@ def fetch_source(src, limit, captions):
                 item["duration"] = e.get("itunes_duration")
             if src["kind"] == "youtube":
                 item["video_id"] = e.get("yt_videoid")
+            if e.get("content"):  # full article body; stays in data/raw, never published
+                item["content"] = clean(e.content[0].get("value"), 10**6)
             result["items"].append(item)
         if url != urls[0]:
             notes.append(f"using fallback feed ({url[:60]}…)")
