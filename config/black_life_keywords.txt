@@ -1,0 +1,48 @@
+# Black Life keywords: a backup check for /daily-brief.
+# Stories are tagged Black Life by judgment of what they're about. If a story mentions
+# one of these words but wasn't tagged, the validator lists it for a second look.
+# One word or phrase per line. Matching ignores upper/lower case. Lines starting with # are notes.
+
+African American
+African-American
+Black Americans
+Black America
+Black community
+Black communities
+Black voters
+Black women
+Black men
+Black students
+Black families
+Black residents
+Black farmers
+Black-owned
+Black history
+Black culture
+Black Lives Matter
+Black church
+farmers of color
+people of color
+HBCU
+historically Black
+NAACP
+Urban League
+Congressional Black Caucus
+civil rights
+voting rights
+Voting Rights Act
+racism
+racist
+racial justice
+racial wealth gap
+reparations
+redlining
+segregation
+Jim Crow
+Juneteenth
+1619
+Tulsa
+Emmett Till
+Martin Luther King
+Andrew Young
+Divine Nine

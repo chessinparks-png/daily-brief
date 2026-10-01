@@ -251,6 +251,10 @@ def collect(args):
             seen_titles[norm_title(it["title"])] = f"{src['name']}: {it['title']}"
             items.append(item)
 
+    for old in TEXT_DIR.glob("*/*.txt"):  # transcripts are cached; drop month-old ones
+        if datetime.fromtimestamp(old.stat().st_mtime, timezone.utc) < t0 - timedelta(days=SEEN_DAYS):
+            old.unlink()
+
     cutoff = t0 - timedelta(days=PENDING_DAYS)
     state["pending"] = {k: v for k, v in state["pending"].items() if parse(v) > cutoff}
     save_state(state)

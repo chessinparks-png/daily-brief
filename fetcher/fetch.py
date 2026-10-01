@@ -11,6 +11,7 @@ Outputs:
 Usage: python fetcher/fetch.py [--limit N] [--no-captions]
 """
 import argparse
+import html
 import json
 import re
 import sys
@@ -51,9 +52,9 @@ def get(url, **kw):
             time.sleep(2 ** attempt * 2)
 
 
-def clean(html, n=300):
-    text = re.sub(r"<[^>]+>", " ", html or "")
-    text = re.sub(r"\s+", " ", text).strip()
+def clean(html_text, n=300):
+    text = re.sub(r"<[^>]+>", " ", html_text or "")
+    text = re.sub(r"\s+", " ", html.unescape(text)).strip()
     return text[:n] + ("…" if len(text) > n else "")
 
 

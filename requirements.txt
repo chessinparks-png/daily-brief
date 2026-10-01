@@ -4,3 +4,4 @@ youtube-transcript-api>=1.2
 yt-dlp>=2025.1.1
 faster-whisper>=1.1
 trafilatura>=2.0
+jsonschema>=4.0

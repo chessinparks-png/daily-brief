@@ -23,6 +23,11 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
 - `fetcher/fetch.py`: fetches all sources → `data/raw/feeds.json` plus a printed report
 - `fetcher/prepare.py`: Stage 2. New items since the last brief, captions + Whisper
   transcripts, dedupe → `data/raw/brief_input.json` and `data/raw/text/` (full text, never published)
+- `fetcher/validate.py`: Stage 3. Checks `data/latest.json` against `config/brief.schema.json`
+  plus the publishing rules (quotes word-for-word with correct timestamps, no summaries for
+  headline-only items, no copied passages); warns on Black Life keyword matches left untagged
+- `.claude/commands/daily-brief.md`: the `/daily-brief` command (collect → write → validate → publish)
+- `config/black_life_keywords.txt`: backup keyword list for Black Life tagging (owner edits it)
 - `.github/workflows/fetch-feeds.yml`: Stage 1 test workflow (cloud check only)
 
 ## Commands
@@ -30,3 +35,5 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
 - Test the fetcher: `python fetcher/fetch.py --limit 2`
 - Collect today's items: `python fetcher/prepare.py` (`--no-whisper` to skip podcast transcription)
 - After a brief is published: `python fetcher/prepare.py --mark-done`
+- Check a brief: `python fetcher/validate.py`
+- Black Life: tag by judgment of what the story is about; the keyword list is only a backup check.

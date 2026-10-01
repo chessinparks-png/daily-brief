@@ -27,26 +27,29 @@ Pages + Access (free plans), open-source libraries, local Whisper.
    Test every source, report results, flag failures + free fixes. ✅ approved
 2. **Transcripts** (runs locally) ✅ approved — — YouTube captions, Whisper for Native Land Pod,
    skip Shorts and not-yet-aired live events, "new since last brief" window, dedupe.
-3. **/daily-brief command** ← *next* — — `.claude/commands/daily-brief.md` + JSON schema
+3. **/daily-brief command** ← *in review* — — `.claude/commands/daily-brief.md` + JSON schema
    + validator; Black Life tagging + `config/black_life_keywords.txt` (editable).
 4. **Web app** — static HTML/CSS/JS (no build step), 4 tabs, mobile-first,
    PWA manifest + service worker, dark mode, deployed to Cloudflare Pages
    and locked to your email with Cloudflare Access.
 5. **Polish** — archive of past briefs, failure banner when a source is down.
 
-## Data shape (draft, finalized in Stage 3)
+## Data shape (`data/latest.json`, schema in `config/brief.schema.json`)
 
 ```json
 {
-  "date": "2026-10-02",
-  "episodes": [{ "source": "...", "title": "...", "url": "...",
-    "cards": ["2–3 sentences", "..."],
-    "quotes": [{ "text": "...", "timestamp": "12:34", "url": "...&t=754" }],
+  "date": "2026-10-01", "generated_at": "…", "since": "…", "failed_sources": [],
+  "episodes": [{ "id": "…", "source": "…", "title": "…", "url": "…", "published": "…",
+    "cards": ["2–3 sentences", "…"],
+    "quotes": [{ "text": "word-for-word", "speaker": "…", "timestamp": "12:15",
+                 "url": "…&t=735s" }],
     "takeaway": "one line", "black_life": true }],
-  "headlines": [{ "source": "...", "headline": "...", "summary": "2 sentences",
-    "url": "...", "black_life": false }]
+  "headlines": [{ "id": "…", "source": "…", "headline": "…", "url": "…", "published": "…",
+    "summary": "1–2 sentences, or null for headline-only", "black_life": false }]
 }
 ```
+Podcast quote links go to the episode page (no time jump); podcast timestamps are
+approximate because ads are inserted per listener.
 
 ## Rules baked in
 - Only summaries + ≤2 short quotes per episode are ever committed/published.
@@ -99,3 +102,7 @@ Substack 403s the same IPs. Both work from a home internet connection.
 - Philip Lewis: headline + link only (`"summarize": false`).
 - Washington Informer: feed has excerpts only, so full articles are downloaded
   (`"fetch_full_text": true`, extracted with trafilatura; kept in data/raw/ only).
+
+## Decisions (Stage 3)
+- Black Life is tagged by judgment of what a story is about; `config/black_life_keywords.txt`
+  is a backup that makes the validator flag untagged matches for a second look.

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Daily Brief (data/latest.json)",
+  "description": "Written by /daily-brief. Only summaries, short quotes and links: never full text.",
+  "type": "object",
+  "required": ["date", "generated_at", "since", "episodes", "headlines", "failed_sources"],
+  "additionalProperties": false,
+  "properties": {
+    "date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "since": {"type": "string", "format": "date-time"},
+    "failed_sources": {"type": "array", "items": {"type": "string"}},
+    "episodes": {"type": "array", "items": {"$ref": "#/$defs/episode"}},
+    "headlines": {"type": "array", "items": {"$ref": "#/$defs/headline"}}
+  },
+  "$defs": {
+    "text": {"type": "string", "minLength": 1, "maxLength": 500},
+    "episode": {
+      "type": "object",
+      "required": ["id", "source", "title", "url", "published", "cards", "quotes", "takeaway", "black_life"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "source": {"type": "string"},
+        "title": {"type": "string"},
+        "url": {"type": "string", "format": "uri"},
+        "published": {"type": ["string", "null"]},
+        "cards": {"type": "array", "maxItems": 4, "items": {"$ref": "#/$defs/text"}},
+        "quotes": {
+          "type": "array", "maxItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["text", "speaker", "timestamp", "url"],
+            "additionalProperties": false,
+            "properties": {
+              "text": {"type": "string", "minLength": 1, "maxLength": 300},
+              "speaker": {"type": ["string", "null"]},
+              "timestamp": {"type": "string", "pattern": "^(\\d+:)?\\d{1,2}:\\d{2}$"},
+              "url": {"type": "string", "format": "uri"}
+            }
+          }
+        },
+        "takeaway": {"anyOf": [{"$ref": "#/$defs/text"}, {"type": "null"}]},
+        "black_life": {"type": "boolean"}
+      }
+    },
+    "headline": {
+      "type": "object",
+      "required": ["id", "source", "headline", "url", "published", "summary", "black_life"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "source": {"type": "string"},
+        "headline": {"type": "string"},
+        "url": {"type": "string", "format": "uri"},
+        "published": {"type": ["string", "null"]},
+        "summary": {"anyOf": [{"$ref": "#/$defs/text"}, {"type": "null"}]},
+        "black_life": {"type": "boolean"}
+      }
+    }
+  }
+}
