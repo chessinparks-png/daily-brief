@@ -1,0 +1,34 @@
+name: Fetch feeds (Stage 1 test)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/daily-brief-app-xjojem]
+    paths: [fetcher/**, config/**, requirements.txt, .github/workflows/fetch-feeds.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Fetch all sources
+        run: python fetcher/fetch.py --limit 5 | tee report.txt
+        continue-on-error: true
+      - name: Job summary
+        if: always()
+        run: { echo '```'; cat report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: feeds-raw
+          path: data/raw/feeds.json
+          retention-days: 3

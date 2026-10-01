@@ -1,0 +1,71 @@
+{
+  "_comment": "Edit this file to add/remove sources. 'kind' decides how the fetcher resolves the feed. Resolved IDs are cached in config/resolved.json.",
+  "sources": [
+    {
+      "id": "native-land-pod",
+      "name": "Native Land Pod",
+      "kind": "podcast",
+      "section": "listen",
+      "itunes_search": "Native Land Pod"
+    },
+    {
+      "id": "jemele-hill-yt",
+      "name": "Jemele Hill (YouTube)",
+      "kind": "youtube",
+      "section": "listen",
+      "handles": ["JemeleHillisUnbothered", "jemelehill", "JemeleHillUnbothered"],
+      "search": "Jemele Hill Unbothered"
+    },
+    {
+      "id": "hcr-yt",
+      "name": "Heather Cox Richardson (YouTube)",
+      "kind": "youtube",
+      "section": "listen",
+      "handles": ["HeatherCoxRichardson", "heathercoxrichardson"],
+      "search": "Heather Cox Richardson"
+    },
+    {
+      "id": "hcr-substack",
+      "name": "Letters from an American",
+      "kind": "rss",
+      "section": "headlines",
+      "urls": ["https://heathercoxrichardson.substack.com/feed"]
+    },
+    {
+      "id": "capital-b",
+      "name": "Capital B",
+      "kind": "rss",
+      "section": "headlines",
+      "urls": ["https://capitalbnews.org/feed/", "https://capitalbnews.org/rss/", "https://capitalbnews.org/feed.xml"]
+    },
+    {
+      "id": "reuters",
+      "name": "Reuters",
+      "kind": "rss",
+      "section": "headlines",
+      "urls": ["https://news.google.com/rss/search?q=site:reuters.com+when:1d&hl=en-US&gl=US&ceid=US:en"]
+    },
+    {
+      "id": "philip-lewis",
+      "name": "Philip Lewis (Bluesky)",
+      "kind": "bluesky",
+      "section": "headlines",
+      "handles": ["philiplewis.bsky.social"],
+      "search": "Philip Lewis"
+    },
+    {
+      "id": "the-atlantic",
+      "name": "The Atlantic",
+      "kind": "rss",
+      "section": "headlines",
+      "urls": ["https://www.theatlantic.com/feed/all/"]
+    },
+    {
+      "id": "washington-informer",
+      "name": "Washington Informer",
+      "kind": "rss",
+      "section": "headlines",
+      "urls": ["https://www.washingtoninformer.com/feed/"]
+    }
+  ]
+}
