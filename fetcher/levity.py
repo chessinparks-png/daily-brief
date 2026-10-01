@@ -100,6 +100,7 @@ def apple_episodes(query):
                     "link": e.get("trackViewUrl"), "age_days": (now - released).total_seconds() / 86400,
                     "minutes": (e.get("trackTimeMillis") or 0) / 60000,
                     "description": e.get("description") or "", "verified": True,
+                    "artwork": e.get("artworkUrl600"),
                     "platform": "Apple Podcasts"})
     return out
 

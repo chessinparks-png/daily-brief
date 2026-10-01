@@ -23,8 +23,8 @@ Every episode and Levity item appears exactly once: `section: "listen"` → `epi
 `section: "levity"` → `levity`. Everything else is a headline, and **at most 12 headlines**
 make the brief: first every Black Life story, then the rest in order of importance (how
 much the news matters to the owner and how many people it affects, not how recent it is).
-If more than 12 are Black Life, keep the 12 most important. Copy `id`, `source`, `published` and `link` (as `url`)
-exactly. Top level: `date` (today, YYYY-MM-DD), `generated_at` (now, ISO 8601 with
+If more than 12 are Black Life, keep the 12 most important. Copy `id`, `source`, `published`, `image` and `link` (as `url`)
+exactly (`image` may be null; the app shows a colored tile instead). Top level: `date` (today, YYYY-MM-DD), `generated_at` (now, ISO 8601 with
 timezone), `since` (from brief_input.json), `failed_sources` (the `source` names in
 brief_input.json's `failed_sources`).
 
@@ -48,7 +48,12 @@ brief_input.json's `failed_sources`).
   `summarize: false` → `null`.
 
 **Levity** (`section: "levity"`): copy `id`, `source`, `title`, `show`, `platform`,
-`published` and `link` (as `url`). No summary, nothing else.
+`published`, `image` and `link` (as `url`). No summary, nothing else.
+
+**Highlight** (`highlight`, episodes and headlines): on about one item in three, pick the
+single word or short name in the title that carries the story (a person, place or
+institution, e.g. "Cornell", "USDA", "Andrew Young") and copy it exactly as it appears in the
+title. The app colors it. Otherwise `null`. Never a generic word ("new", "says").
 
 **For every summary, card and takeaway:** use only facts in the source text. Write in your
 own words: never copy 12 or more words in a row from the source (quotes are the only

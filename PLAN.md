@@ -18,7 +18,8 @@ Pages + Access (free plans), open-source libraries, local Whisper.
  Private GitHub repo  ──►  Cloudflare Pages (free) builds the static site on push
                            Cloudflare Access (free Zero Trust plan): only your
                            email can sign in (one-time code sent to your inbox)
-   PWA: add to home screen · Tabs: Listen · Headlines · Black Life · Quotes · small Levity section
+   PWA: add to home screen · one scrolling home screen (Particle style): Listen, Black Life,
+   Read, Headlines, Quotes, Levity as swipe rows
 ```
 
 ## Stages (each waits for your approval)
@@ -29,7 +30,7 @@ Pages + Access (free plans), open-source libraries, local Whisper.
    skip Shorts and not-yet-aired live events, "new since last brief" window, dedupe.
 3. **/black-brief command** ← *in review* — `.claude/commands/black-brief.md` + JSON schema
    + validator; Black Life tagging + `config/black_life_keywords.txt` (editable).
-4. **Web app** — static HTML/CSS/JS (no build step), 4 tabs, mobile-first,
+4. **Web app** ← *in progress* — static HTML/CSS/JS in `site/` (no build step), one scrolling home screen, mobile-first,
    PWA manifest + service worker, dark mode, deployed to Cloudflare Pages
    and locked to your email with Cloudflare Access.
 5. **Polish** — archive of past briefs, failure banner when a source is down.
@@ -126,3 +127,21 @@ text downloaded, always Black Life. Levity: Karlous Miller tracker, max 2/day.
 - The "Laughs" section is called Levity.
 - At most 12 headlines per brief: Black Life stories first, then the rest by importance.
   Headlines left out are still marked as covered, so they don't come back the next day.
+
+## Design (Stage 4, Oct 2 redesign after Particle)
+- One scrolling home screen, no tabs. Order: nature photo header + grounding tip, then
+  Listen, Black Life, Read, Headlines, Quotes, Levity. Each is a bold title with ">" and a
+  one-line subtitle over a horizontal swipe row (next card peeks in). Tapping the title opens
+  the full list (`#listen`, `#black`, `#read`, `#headlines`, `#quotes`, `#levity`).
+- Which row an item lands in: episodes → Listen; Black Life → every item tagged
+  `black_life` (episodes also stay in Listen); Read → other headlines with a summary;
+  Headlines → other headline-only items (Reuters, Bluesky); Quotes → every episode quote.
+- Cards: tall, rounded, full-bleed preview image with a tinted wash by section (Listen
+  purple, Black Life gold, Read blue, Headlines red, Levity green), tiny uppercase
+  "SOURCE · 3H AGO", bold white headline with an optional `highlight` word in the section color.
+  No image → a colored tile with the source name. Images load from the source URL; nothing
+  is downloaded or committed.
+- Image URLs: RSS media tags, YouTube thumbnails (hq720, falling back to hqdefault), podcast
+  artwork, Substack covers, else the article's og:image (`fetcher/fetch.py:og_image`).
+- Header photo: `site/header.jpg` (owner supplies it; a painted dusk gradient shows until then).
+  Grounding tips: the `TIPS` list at the top of `site/app.js`, one per day.

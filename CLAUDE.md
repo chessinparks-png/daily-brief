@@ -35,6 +35,9 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
   headline-only items, no copied passages); warns on Black Life keyword matches left untagged
 - `.claude/commands/black-brief.md`: the `/black-brief` command (collect → write → validate → publish)
 - `config/black_life_keywords.txt`: backup keyword list for Black Life tagging (owner edits it)
+- `site/`: the app (static `index.html`, `styles.css`, `app.js`; reads `data/latest.json`).
+  One scrolling home screen in the style of the Particle news app; design notes in PLAN.md.
+  `site/header.jpg` is the owner's nature photo; grounding tips are `TIPS` in `site/app.js`.
 - `.github/workflows/fetch-feeds.yml`: Stage 1 test workflow (cloud check only)
 
 ## Commands
