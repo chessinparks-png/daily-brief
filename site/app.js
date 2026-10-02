@@ -5,23 +5,9 @@
 
   const app = document.getElementById("app");
 
-  // Grounding tips: one a day, in order. Edit freely.
-  const TIPS = [
-    "Breathe in for 4 counts, hold for 4, out for 6. Do it three times before you scroll.",
-    "Name 5 things you can see, 4 you can hear, 3 you can touch. Then read on.",
-    "Put both feet flat on the floor. Notice the ground holding you up.",
-    "Unclench your jaw and drop your shoulders. Take one slow breath.",
-    "You can care about the news and still close the app. Pick one story and let the rest wait.",
-    "Drink a glass of water before your first headline.",
-    "Look out a window for 30 seconds. Find the farthest thing you can see.",
-    "Press your palms together for 5 seconds, then release. Notice the warmth.",
-    "Say one thing you're grateful for out loud before you read.",
-    "Roll your neck slowly, once each way. News can wait ten seconds.",
-    "Hold something with texture, like a mug or a stone. Feel it for three breaths.",
-    "Breathe out longer than you breathe in. Your body reads that as safe.",
-    "Stretch your arms overhead and reach. Then begin.",
-    "Read with a question in mind: what can I actually do with this today?",
-  ];
+  // Grounding tips live in site/tips.txt (one per line; lines starting with # are ignored).
+  // Edit that file, not this one. A random tip shows on each open and on each tap.
+  let TIPS = [];
 
   // Section order on the home screen, with the tone (color wash) each uses.
   const SECTIONS = [
@@ -186,8 +172,26 @@
     return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
   }
 
-  const dayOfYear = (d) => Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5);
-  let tipIndex = dayOfYear(new Date()) % TIPS.length;
+  // Days since 1970 by local date: keeps counting across New Year, so the park order never jumps.
+  const dayNumber = (d) => Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5);
+  let tipIndex = 0;
+
+  async function loadTips() {
+    try {
+      const r = await fetch("tips.txt", { cache: "no-cache" });
+      if (r.ok) {
+        return (await r.text()).split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+      }
+    } catch (e) { /* no tips file */ }
+    return [];
+  }
+
+  const randomTip = (avoid) => {
+    if (TIPS.length < 2) return 0;
+    let i;
+    do i = Math.floor(Math.random() * TIPS.length); while (i === avoid);
+    return i;
+  };
 
   // Park photos come only from the owner's NPS set, listed in site/parks/parks.json
   // (run `python fetcher/parks.py` after adding photos). No set → plain green, never a stand-in.
@@ -228,6 +232,7 @@
           <div class="opening__brand">The Black Brief${window.__SAMPLE__ ? ' <span class="opening__sample">Sample</span>' : ""}</div>
           <p class="opening__greet">${greeting(now)}</p>
           <h1 class="opening__date"><span>${esc(weekday)}</span> ${esc(day)}</h1>
+          ${TIPS.length ? `
           <button class="opening__tip" type="button" data-tip aria-live="polite">
             <span class="opening__label">Grounding tip</span>
             <span class="opening__tiptext" data-tip-text>${esc(TIPS[tipIndex])}</span>
@@ -236,6 +241,7 @@
               Tap for another
             </span>
           </button>
+          ` : ""}
         </div>
         <div class="opening__foot">
           ${credit}
@@ -249,7 +255,7 @@
   function nextTip() {
     const el = document.querySelector("[data-tip-text]");
     if (!el) return;
-    tipIndex = (tipIndex + 1) % TIPS.length;
+    tipIndex = randomTip(tipIndex);
     el.classList.add("is-out");
     setTimeout(() => { el.textContent = TIPS[tipIndex]; el.classList.remove("is-out"); }, 180);
   }
@@ -431,9 +437,11 @@
     else closePage();
   }
 
-  Promise.all([loadBrief(), loadParks()]).then(([b, parks]) => {
+  Promise.all([loadBrief(), loadParks(), loadTips()]).then(([b, parks, tips]) => {
     brief = b;
-    park = parks.length ? parks[dayOfYear(new Date()) % parks.length] : null;
+    TIPS = tips;
+    tipIndex = randomTip(-1);
+    park = parks.length ? parks[dayNumber(new Date()) % parks.length] : null;
     if (b) {
       model = buildModel(b);
       [...model.listen, ...model.black, ...model.read, ...model.headlines].forEach((i) => byId.set(i.id, i));

@@ -172,4 +172,10 @@ text downloaded, always Black Life. Levity: Karlous Miller tracker, max 2/day.
   stock, Wikimedia, feed artwork or other unrelated pictures.
 - Opening photos: only the owner's NPS park photo set in `site/parks/`, listed in
   `site/parks/parks.json` by `python fetcher/parks.py`; one per day. With no photos it shows
-  plain deep green, never a substitute. Grounding tips: `TIPS` at the top of `site/app.js`.
+  plain deep green, never a substitute. Grounding tips: `site/tips.txt` (owner's 109 tips; a random one
+  on each open and on tap).
+- Park photos (Oct 1): 24 of the original 30, about 1600 px wide and under 1.5 MB each, re-downloaded from
+  Wikimedia Commons (public domain, NPS). Dropped 6 that weren't nature scenes (picnic area, camp
+  road, porch, canal road, two canoe shots). `parks.py` spreads each park evenly through the cycle and
+  never puts the same park on back-to-back days (last → first included); the app counts days
+  continuously so New Year doesn't break the order.
