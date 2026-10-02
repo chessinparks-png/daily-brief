@@ -36,15 +36,15 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
   headline-only items, no copied passages); warns on Black Life keyword matches left untagged
 - `.claude/commands/black-brief.md`: the `/black-brief` command (collect → write → validate → publish)
 - `config/black_life_keywords.txt`: backup keyword list for Black Life tagging (owner edits it)
-- App (repo root, no build step): `index.html`, `app.css`, `app.js`, `sw.js`, `manifest.webmanifest`,
-  `icons/`. Preview on a Mac: `python fetcher/preview.py` (never serves `data/raw/`).
-- `photos/` + `photos/photos.json`: 30 public-domain NPS hero photos (one per day) from
-  `fetcher/get_photos.py` and `config/photo_titles.txt`; credit line shown in the app
 - `site/`: the app (static `index.html`, `styles.css`, `app.js`; reads `data/latest.json`).
+  Installable: `manifest.webmanifest`, `icons/` (from `fetcher/make_icons.py`), and `sw.js`
+  (offline: keeps the last brief, tips and photos seen; bump `CACHE` in sw.js when the file list changes).
   One scrolling home screen in the style of the Particle news app; design notes in PLAN.md.
   Opening photos come only from the owner's NPS park set in `site/parks/` (list them with
   `python fetcher/parks.py`, which also orders them so a park never shows two days running).
   Preview on a Mac: `python fetcher/preview.py` → http://localhost:8765/site/ (never serves `data/raw/`).
+- `photos/` + `photos/photos.json`: the original 30 NPS downloads with source and license records
+  (`fetcher/get_photos.py`, `config/photo_titles.txt`); not used by the app. The app uses `site/parks/`.
 - `site/tips.txt`: grounding tips, one per line, written once and edited by the owner; the daily run never touches it
 - Card images: only the item's own (YouTube thumbnail for videos, og:image for stories).
   Podcasts and anything else get a gradient card. Never use stock or unrelated photos.

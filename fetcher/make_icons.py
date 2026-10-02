@@ -1,4 +1,4 @@
-"""Makes the app icons (icons/*.png) with only the standard library. Run: python fetcher/make_icons.py"""
+"""Makes the app icons (site/icons/*.png) with only the standard library. Run: python fetcher/make_icons.py"""
 import struct, zlib, pathlib
 
 BG = (17, 16, 14)
@@ -33,7 +33,7 @@ def png(size, safe):
             + chunk(b"IDAT", zlib.compress(raw, 9)) + chunk(b"IEND", b""))
 
 
-out = pathlib.Path(__file__).resolve().parent.parent / "icons"
+out = pathlib.Path(__file__).resolve().parent.parent / "site" / "icons"
 out.mkdir(exist_ok=True)
 for name, size, safe in [("icon-180.png", 180, False), ("icon-192.png", 192, False),
                          ("icon-512.png", 512, False), ("icon-maskable-512.png", 512, True)]:

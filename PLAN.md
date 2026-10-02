@@ -179,3 +179,6 @@ text downloaded, always Black Life. Levity: Karlous Miller tracker, max 2/day.
   road, porch, canal road, two canoe shots). `parks.py` spreads each park evenly through the cycle and
   never puts the same park on back-to-back days (last → first included); the app counts days
   continuously so New Year doesn't break the order.
+- Oct 1: `site/` is the only app. The first top-level app was removed; its install files
+  (manifest, icons, offline service worker) moved into `site/`. 123 grounding tips in `site/tips.txt`
+  (the owner's 109 plus the 14 from the redesign).

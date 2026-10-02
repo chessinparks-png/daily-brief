@@ -118,7 +118,7 @@
   // ---------- rendering ----------
   function imageTag(src) {
     if (!src) return "";
-    return `<img class="card__img" src="${esc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
+    return `<img class="card__img" src="${esc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">`;
   }
 
   function cardHTML(item, tone, opts = {}) {
@@ -435,6 +435,19 @@
     const key = location.hash.slice(1);
     if (key) renderPage(key);
     else closePage();
+  }
+
+  // Offline support and Add to Home Screen. Also removes any other service worker on this
+  // site (the old top-level app had one that would otherwise keep answering for this page).
+  if ("serviceWorker" in navigator) {
+    addEventListener("load", () => {
+      const mine = new URL("sw.js", location.href).href;
+      navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => {
+        const w = r.active || r.waiting || r.installing;
+        if (w && w.scriptURL !== mine) r.unregister();
+      })).catch(() => {});
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
   }
 
   Promise.all([loadBrief(), loadParks(), loadTips()]).then(([b, parks, tips]) => {

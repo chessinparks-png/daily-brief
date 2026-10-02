@@ -23,6 +23,11 @@ def private(path):
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def send_head(self):
+        if self.path.split("?")[0] == "/":  # the app lives in site/
+            self.send_response(302)
+            self.send_header("Location", "/site/")
+            self.end_headers()
+            return None
         if private(self.translate_path(self.path)):
             self.send_error(404)
             return None
