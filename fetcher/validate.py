@@ -213,6 +213,12 @@ def main():
                 err(f"belongs in {expected}")
             if out["url"] != it["link"]:
                 err(f"url should be {it['link']}")
+            if out.get("image") != it.get("image"):
+                err(f"image should be copied exactly from brief_input.json: {it.get('image')}")
+            if out.get("highlight"):
+                title = out.get("headline") or out.get("title") or ""
+                if not re.search(rf"(?<!\w){re.escape(out['highlight'])}(?!\w)", title, re.I):
+                    err(f"highlight {out['highlight']!r} must be a word or phrase from the title")
             src = text_of(it)
             if section == "levity":
                 continue  # title, show and link only; the schema allows nothing else

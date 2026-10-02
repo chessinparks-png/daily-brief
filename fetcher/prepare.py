@@ -334,6 +334,7 @@ def collect(args):
                         item["note"] = "full article unavailable; using feed excerpt"
                 write_text(item, text)
 
+            item["image"] = fetch.item_image(item["section"], it["link"])  # URL only, never downloaded
             item.setdefault("status", "ok")
             item["summarize"] = bool(src.get("summarize", True) and item["status"] == "ok"
                                      and item.get("text_chars", 0) >= MIN_TEXT_CHARS)

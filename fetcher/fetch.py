@@ -173,6 +173,53 @@ def article_text(url):
         return ""
 
 
+# ---------- preview images (URLs only: the app loads them from the source, nothing is downloaded) ----------
+# Only an image that belongs to the item: a video's own YouTube thumbnail, or a story's own
+# og:image. Podcasts and everything else get none (the app shows a gradient card).
+
+def youtube_thumb(video_id):
+    """hq720 has no letterbox bars; the app falls back to hqdefault if a video lacks it."""
+    return f"https://i.ytimg.com/vi/{video_id}/hq720.jpg" if video_id else None
+
+
+OG_SKIP = ("news.google.com", "bsky.app")
+
+
+def youtube_id(url):
+    m = re.search(r"(?:[?&]v=|youtu\.be/|/shorts/)([\w-]{11})", url or "")
+    return m.group(1) if m else None
+
+
+def item_image(section, url):
+    """The item's own image URL, or None. Videos: YouTube thumbnail. Stories: og:image.
+    Podcast episodes (and Levity podcast links) never get one."""
+    vid = youtube_id(url)
+    if vid:
+        return youtube_thumb(vid)
+    if section in ("listen", "levity"):
+        return None
+    return og_image(url)
+
+
+def og_image(url):
+    """og:image / twitter:image from an article page's <head>. None when there isn't one."""
+    if not url or any(h in url for h in OG_SKIP):
+        return None
+    try:
+        r = get(url, stream=True)
+        head = r.raw.read(400_000, decode_content=True).decode(r.encoding or "utf-8", "replace")
+        r.close()
+    except Exception:  # noqa: BLE001
+        return None
+    for prop in ("og:image", "og:image:url", "twitter:image", "twitter:image:src"):
+        for pat in (rf'<meta[^>]+(?:property|name)=["\']{prop}["\'][^>]+content=["\']([^"\']+)',
+                    rf'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\']{prop}["\']'):
+            m = re.search(pat, head, re.I)
+            if m and m.group(1).startswith("http"):
+                return m.group(1).replace("&amp;", "&")
+    return None
+
+
 def items_substack(src, limit, notes):
     """Substack archive API: gives author, post type and whether a post is free."""
     base = src["url"].rstrip("/")

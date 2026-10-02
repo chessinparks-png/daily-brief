@@ -18,7 +18,8 @@ Pages + Access (free plans), open-source libraries, local Whisper.
  Private GitHub repo  ──►  Cloudflare Pages (free) builds the static site on push
                            Cloudflare Access (free Zero Trust plan): only your
                            email can sign in (one-time code sent to your inbox)
-   PWA: add to home screen · Tabs: Listen · Headlines · Black Life · Quotes · small Levity section
+   PWA: add to home screen · one scrolling home screen (Particle style): Listen, Black Life,
+   Read, Headlines, Quotes, Levity as swipe rows
 ```
 
 ## Stages (each waits for your approval)
@@ -29,7 +30,7 @@ Pages + Access (free plans), open-source libraries, local Whisper.
    skip Shorts and not-yet-aired live events, "new since last brief" window, dedupe.
 3. **/black-brief command** ← *in review* — `.claude/commands/black-brief.md` + JSON schema
    + validator; Black Life tagging + `config/black_life_keywords.txt` (editable).
-4. **Web app** — static HTML/CSS/JS (no build step), 4 tabs, mobile-first,
+4. **Web app** ← *in progress* — static HTML/CSS/JS in `site/` (no build step), one scrolling home screen, mobile-first,
    PWA manifest + service worker, dark mode, deployed to Cloudflare Pages
    and locked to your email with Cloudflare Access.
 5. **Polish** — archive of past briefs, failure banner when a source is down.
@@ -150,3 +151,25 @@ text downloaded, always Black Life. Levity: Karlous Miller tracker, max 2/day.
 - Inspired by Particle (principles only): section names as a large bold heading row, tiny letter-spaced
   source labels, bold titles with summaries clamped to 2 lines, open rows with hairlines instead of boxed
   cards, big serif quotes. Black Life is a small green label; unread dots are small and faded.
+## Design (Stage 4, Oct 2 redesign after Particle)
+- Opening (Oct 2 update): a full-screen park photo with the date and the grounding tip large and
+  centered. Tap the tip for another. Scrolling slides the news up over it while the photo fades.
+- One scrolling home screen, no tabs. Order: the opening, then
+  Listen, Black Life, Read, Headlines, Quotes, Levity. Each is a bold title with ">" and a
+  one-line subtitle over a horizontal swipe row (next card peeks in). Tapping the title opens
+  the full list (`#listen`, `#black`, `#read`, `#headlines`, `#quotes`, `#levity`).
+- Which row an item lands in: episodes → Listen; Black Life → every item tagged
+  `black_life` (episodes also stay in Listen); Read → other headlines with a summary;
+  Headlines → other headline-only items (Reuters, Bluesky); Quotes → every episode quote.
+- Cards: tall, rounded, full-bleed preview image with a tinted wash by section (Listen
+  purple, Black Life gold, Read blue, Headlines red, Levity green), tiny uppercase
+  "SOURCE · 3H AGO", bold white headline with an optional `highlight` word in the section color.
+  Images load from the source URL; nothing is downloaded or committed.
+- Images (Oct 2 rule): only an image that belongs to the item. Videos get their own YouTube
+  thumbnail (hq720, falling back to hqdefault); stories get their own og:image
+  (`fetcher/fetch.py:item_image`). Podcast episodes, Levity podcast links, Reuters, Bluesky
+  and anything without its own image get a bold gradient card in the section's color. Never
+  stock, Wikimedia, feed artwork or other unrelated pictures.
+- Opening photos: only the owner's NPS park photo set in `site/parks/`, listed in
+  `site/parks/parks.json` by `python fetcher/parks.py`; one per day. With no photos it shows
+  plain deep green, never a substitute. Grounding tips: `TIPS` at the top of `site/app.js`.

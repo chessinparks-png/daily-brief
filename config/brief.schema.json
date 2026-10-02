@@ -119,6 +119,22 @@
         },
         "black_life": {
           "type": "boolean"
+        },
+        "image": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri",
+          "description": "Preview image URL copied from brief_input.json (loaded from the source by the app; never downloaded)"
+        },
+        "highlight": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 40,
+          "description": "One key word or short phrase from the headline/title, shown in the section color. Use on some items, not all."
         }
       }
     },
@@ -178,6 +194,22 @@
           "items": {
             "$ref": "#/$defs/quote"
           }
+        },
+        "image": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri",
+          "description": "Preview image URL copied from brief_input.json (loaded from the source by the app; never downloaded)"
+        },
+        "highlight": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 40,
+          "description": "One key word or short phrase from the headline/title, shown in the section color. Use on some items, not all."
         }
       }
     },
@@ -218,6 +250,14 @@
             "string",
             "null"
           ]
+        },
+        "image": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri",
+          "description": "Preview image URL copied from brief_input.json (loaded from the source by the app; never downloaded)"
         }
       }
     },
