@@ -1,7 +1,7 @@
 {
   "date": "2026-10-01",
-  "generated_at": "2026-10-01T17:13:18-04:00",
-  "since": "2026-09-30T07:57:15+00:00",
+  "generated_at": "2026-10-01T20:58:14-04:00",
+  "since": "2026-09-30T12:55:17.068551+00:00",
   "failed_sources": [],
   "episodes": [
     {
@@ -54,6 +54,62 @@
         }
       ],
       "takeaway": "The hosts argue that Black Republican pitches like John James's Detroit video sound powerful without context, and that Democrats need years of organizing, not months, to flip Southern states.",
+      "black_life": true,
+      "image": null,
+      "highlight": null
+    },
+    {
+      "id": "f493dea12699",
+      "source": "Jemele Hill (YouTube)",
+      "title": "Should A'ja Wilson Have Been Suspended For Confronting Indiana Fan?",
+      "url": "https://www.youtube.com/watch?v=8ZLIFGlWTYY",
+      "published": "2026-10-01T21:34:52+00:00",
+      "image": "https://i.ytimg.com/vi/8ZLIFGlWTYY/hq720.jpg",
+      "highlight": "A'ja Wilson",
+      "cards": [
+        "Hill says A'ja Wilson should not have walked toward an Indiana Fever fan who stood, pointed and stepped at her late in game two, even though she understands the frustration. As the league's MVP and its face, Hill argues, Wilson risked her availability and should have had an usher deal with him.",
+        "The WNBA gave Wilson a technical but no suspension, ruling she stayed in an area meant for players. Hill calls that the expected outcome: leagues, the NBA included, find a way to keep their best player in a deciding game. She also describes racist abuse and doxxing from people calling themselves Fever or Caitlin Clark fans.",
+        "Hill turns to LSU student Kendall Francis, who says a football player raped her. A Title IX process found him responsible, but on appeal he was allowed back on campus and on the team. Hill links the result to Title IX rules rewritten under Betsy DeVos and asks why no one has questioned coach Lane Kiffin.",
+        "Hill argues the LSU case drew less attention than Cornell's because Francis is a Black woman. She shares that she and her mother each reported sexual assaults to police decades ago and never heard back, as an example of why many women hesitate to report."
+      ],
+      "takeaway": "Hill argues the system routinely fails women who report sexual assault, Black women most of all, and Kendall Francis's case at LSU shows it.",
+      "quotes": [
+        {
+          "text": "If she felt like that fan was out of pocket, tell the usher, make the usher deal with it.",
+          "speaker": "Jemele Hill",
+          "timestamp": "13:09",
+          "url": "https://www.youtube.com/watch?v=8ZLIFGlWTYY&t=789s",
+          "context": "Hill is explaining why A'ja Wilson should not have confronted the Indiana fan herself, pointing to Russell Westbrook having an abusive fan removed through an usher."
+        },
+        {
+          "text": "So, the league decided, tell you what, we gonna find every way possible to make sure we do not suspend the best player in the league.",
+          "speaker": "Jemele Hill",
+          "timestamp": "15:48",
+          "url": "https://www.youtube.com/watch?v=8ZLIFGlWTYY&t=948s",
+          "context": "Hill is explaining why the WNBA chose not to suspend Wilson before a season-deciding game three, ruling she had stayed in an area for players."
+        },
+        {
+          "text": "She trusted the school to do the right thing. The school did not do the right thing.",
+          "speaker": "Jemele Hill",
+          "timestamp": "1:02:49",
+          "url": "https://www.youtube.com/watch?v=8ZLIFGlWTYY&t=3769s",
+          "context": "Hill is reacting to LSU student Kendall Francis's account of reporting a rape by a football player who was later allowed back on the team after an appeal."
+        },
+        {
+          "text": "It's not a money grab, it's a justice grab.",
+          "speaker": "Jemele Hill",
+          "timestamp": "1:11:57",
+          "url": "https://www.youtube.com/watch?v=8ZLIFGlWTYY&t=4317s",
+          "context": "Hill is explaining why some sexual assault survivors file civil lawsuits, after citing figures showing very few reported assaults end in a prison sentence."
+        },
+        {
+          "text": "Both of us are still waiting to hear from the police.",
+          "speaker": "Jemele Hill",
+          "timestamp": "1:14:07",
+          "url": "https://www.youtube.com/watch?v=8ZLIFGlWTYY&t=4447s",
+          "context": "Hill has just described reporting an attempted rape as a child and her mother reporting a rape at gunpoint in 1981, both of which police never followed up on."
+        }
+      ],
       "black_life": true
     }
   ],
@@ -64,7 +120,9 @@
       "headline": "Black UNC Students Say the University Failed Them After a Racist Attack",
       "url": "https://capitalbnews.org/unc-love-island-watch-party-racist-attack/",
       "published": "2026-09-30T18:30:00+00:00",
-      "summary": "A man shouting racial slurs attacked a Black student watch party at UNC-Chapel Hill in August with a makeshift flamethrower, and campus police took nearly 20 minutes to arrive. Black student leaders say the university sent no alert and still hasn't met with them; the attacker got a suspended sentence.",
+      "image": "https://i0.wp.com/capitalbnews.org/wp-content/uploads/2026/09/GettyImages-1228095554-scaled.jpg?fit=2560%2C1699&ssl=1",
+      "highlight": "UNC",
+      "summary": "A man shouting racial slurs attacked a Black student watch party at UNC-Chapel Hill in August with what students called a makeshift flamethrower, and campus police took nearly 20 minutes to arrive. Black student leaders say the university sent no alert and still hasn't met with them; the attacker got a suspended sentence.",
       "black_life": true,
       "long_read": true,
       "quotes": [
@@ -90,33 +148,37 @@
       "headline": "A Key Voice for Farmers of Color at USDA Has Gone Silent Under Trump",
       "url": "https://capitalbnews.org/trump-usda-minority-farmers-committee/",
       "published": "2026-09-30T14:30:00+00:00",
-      "summary": "The USDA's Advisory Committee on Minority Farmers, the only federal advisory panel focused on Black farmers, has been frozen since February 2025 and made no recommendations last year. Former members and Rep. Shontel Brown are pressing Congress for answers.",
+      "image": "https://capitalbnews.org/wp-content/uploads/2026/09/GettyImages-1228876074-scaled.jpg",
+      "highlight": "USDA",
+      "summary": "The USDA's Advisory Committee on Minority Farmers, the only federal advisory panel that addresses Black farmers, has been frozen since February 2025 and made no recommendations last year. Former members and Rep. Shontel Brown want it restarted; the USDA declined to comment.",
       "black_life": true,
       "long_read": true,
       "quotes": [
         {
-          "text": "If you have no representation, the secretary would never get comments and recommendations from anybody because there’s nobody looking like us sitting on there.",
-          "speaker": "Harvey Reed III, former chair of the committee, quoted by Capital B",
+          "text": "If you have no representation, the secretary would never get comments and recommendations from anybody because there’s nobody looking like us sitting on there,",
+          "speaker": "Harvey Reed III, former committee chair, quoted by Capital B",
           "timestamp": null,
           "url": "https://capitalbnews.org/trump-usda-minority-farmers-committee/",
-          "context": "Reed is explaining why the USDA's Advisory Committee on Minority Farmers matters, now that it has sat idle since early 2025 with no new appointments."
+          "context": "Reed, who served on the committee from 2015 to 2023, is explaining why its freeze leaves Black farmers without a voice at the USDA."
         },
         {
           "text": "The Administration cannot simply ignore a legal mandate because it doesn’t fit its agenda.",
-          "speaker": "Rep. Shontel Brown, quoted by Capital B",
+          "speaker": "Rep. Shontel Brown of Ohio, in a statement to Capital B",
           "timestamp": null,
           "url": "https://capitalbnews.org/trump-usda-minority-farmers-committee/",
-          "context": "Brown, the vice ranking member of the House Agriculture Committee, answered Capital B's questions about why the committee Congress created has been put on pause."
+          "context": "Brown, vice ranking member on the House Agriculture Committee, was the only lawmaker who answered Capital B's questions about why the committee Congress created has been sidelined."
         }
       ]
     },
     {
-      "id": "d7ff85e48f4e",
+      "id": "9b68b36a5d2a",
       "source": "Washington Informer",
-      "headline": "D.C. Workers Lose Half Their Family Leave as New Laws Take Effect",
-      "url": "https://www.washingtoninformer.com/dc-cuts-family-paid-leave/",
-      "published": "2026-10-01T14:50:00+00:00",
-      "summary": "Starting Oct. 1, D.C. cut paid family caregiving leave from 12 to six weeks and medical leave to 10 weeks through 2030 to close a budget gap. Advocates say 53% of the workers who use these benefits are Black.",
+      "headline": "At 94, Andrew Young Leads Atlanta Peace Walk With a Message for the World",
+      "url": "https://www.washingtoninformer.com/andrew-young-peace-walk/",
+      "published": "2026-09-30T16:14:00+00:00",
+      "image": "https://www.washingtoninformer.com/wp-content/uploads/2026/09/image-15.jpeg",
+      "highlight": "Andrew Young",
+      "summary": "Former U.N. ambassador and Atlanta mayor Andrew Young, 94, led an inaugural mile-long peace walk through Atlanta's Rodney Cook Sr. Park, stopping at statues of Martin Luther King Jr., John Lewis and himself to tell stories from the civil rights movement. His foundation plans a peace institute beside the park.",
       "black_life": true,
       "long_read": false,
       "quotes": []
@@ -127,7 +189,9 @@
       "headline": "Throwback Thursday: Megan McArdle Can’t Tell Me Shit About White Supremacy ",
       "url": "https://www.contrabandcamp.com/p/throwback-thursday-megan-mcardle",
       "published": "2026-10-01T16:02:58.364000+00:00",
-      "summary": "Responding to a Washington Post column declaring the \"Great Awokening\" over, Harriot reposts his 2017 rebuttal to Megan McArdle, who had warned against overusing the term \"white supremacist.\" He argues white Americans have never recognized racism while it was happening, so they shouldn't police how Black people name it.",
+      "image": "https://substackcdn.com/image/fetch/$s_!Us_M!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F583bf6cc-c388-427f-9fce-8f5ebe327fb4_1615x929.png",
+      "highlight": null,
+      "summary": "Answering a new Megan McArdle column that declares \"The Great Awokening\" over, Harriot reposts his 2017 reply to her warning against overusing the term \"white supremacist.\" He argues white Americans have never recognized racism while it was happening, so they don't get to decide what counts as white supremacy.",
       "black_life": true,
       "long_read": true,
       "quotes": [
@@ -136,27 +200,16 @@
           "speaker": "Michael Harriot",
           "timestamp": null,
           "url": "https://www.contrabandcamp.com/p/throwback-thursday-megan-mcardle",
-          "context": "Harriot is republishing his 2017 reply to Megan McArdle, who had argued that calling things white supremacy was a mistake, and here he asks whether there are degrees of racism."
+          "context": "Harriot is weighing whether there are degrees of racism, and says the one thing he is certain of is who should not settle the question."
         },
         {
-          "text": "White America and white people, in general, have never been on the real-time right side of the movement for justice and equality.",
+          "text": "White people didn’t do a damn thing about the lynch mobs, lunch counters or Jim Crow. We did.",
           "speaker": "Michael Harriot",
           "timestamp": null,
           "url": "https://www.contrabandcamp.com/p/throwback-thursday-megan-mcardle",
-          "context": "Late in the piece, Harriot is making the case that people in power have historically refused to name racism while it was happening, citing lynchings and Jim Crow."
+          "context": "Harriot is rejecting McArdle's argument that strong language about white supremacy is meant to push white Americans into fighting racism with more urgency."
         }
       ]
-    },
-    {
-      "id": "9b68b36a5d2a",
-      "source": "Washington Informer",
-      "headline": "At 94, Andrew Young Leads Atlanta Peace Walk With a Message for the World",
-      "url": "https://www.washingtoninformer.com/andrew-young-peace-walk/",
-      "published": "2026-09-30T16:14:00+00:00",
-      "summary": "At 94, Andrew Young led Atlanta's first Peace Walk through Rodney Cook Sr. Park, stopping at statues of Martin Luther King Jr., John Lewis and himself to share stories from the civil rights movement. He urged nonviolence and reconciliation near the site of a planned peace institute.",
-      "black_life": true,
-      "long_read": false,
-      "quotes": []
     },
     {
       "id": "13afd13ec6f2",
@@ -164,47 +217,12 @@
       "headline": "The Art of Storytelling, Blacksplained by Ali Siddiq",
       "url": "https://www.contrabandcamp.com/p/the-art-of-storytelling-blacksplained",
       "published": "2026-09-30T20:49:11.652000+00:00",
+      "image": "https://substackcdn.com/image/fetch/$s_!CFai!,w_1200,h_600,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-video.s3.amazonaws.com%2Fvideo_upload%2Fpost%2F218178521%2Fd642c3de-52d2-45b1-80d8-ea6a63ee32c3%2Ftranscoded-1790795119.png",
+      "highlight": null,
       "summary": null,
       "black_life": true,
       "long_read": true,
       "quotes": []
-    },
-    {
-      "id": "1add96800c0d",
-      "source": "Michael Harriot (Bluesky)",
-      "headline": "It's a show about Black music and the white music industry. And gangs. And politics. And c…",
-      "url": "https://bsky.app/profile/michaelharriot.bsky.social/post/3mwr6qhhtr52x",
-      "published": "2026-09-30T20:30:00+00:00",
-      "summary": null,
-      "black_life": true,
-      "long_read": false,
-      "quotes": []
-    },
-    {
-      "id": "08d83214fb4d",
-      "source": "Letters from an American",
-      "headline": "September 30, 2026",
-      "url": "https://heathercoxrichardson.substack.com/p/september-30-2026",
-      "published": "2026-10-01T04:04:31+00:00",
-      "summary": "The last U.S. troops have left Iraq, and Richardson traces the 2003 invasion back to neoconservative ambitions and a false case about weapons of mass destruction. She links Bush's \"Mission Accomplished\" moment to Trump's eight-month war on Iran and Hegseth's speech praising \"patriotic cowboys.\"",
-      "black_life": false,
-      "long_read": true,
-      "quotes": [
-        {
-          "text": "Powell was well known and trusted; if he said Iraq was deadly dangerous, people thought it must be true.",
-          "speaker": "Heather Cox Richardson",
-          "timestamp": null,
-          "url": "https://heathercoxrichardson.substack.com/p/september-30-2026",
-          "context": "Richardson is tracing how the Bush administration built its case for invading Iraq in 2003, and why Colin Powell's February 2003 speech to the United Nations carried so much weight."
-        },
-        {
-          "text": "And yet the United States is entering its eighth month of a war on Iran that Trump apparently began with the same cowboy mentality Bush carried into the war in Iraq.",
-          "speaker": "Heather Cox Richardson",
-          "timestamp": null,
-          "url": "https://heathercoxrichardson.substack.com/p/september-30-2026",
-          "context": "After the history of the Iraq invasion, Richardson turns to the day's news that the last U.S. forces left Iraq, and compares that war with the current one against Iran."
-        }
-      ]
     },
     {
       "id": "257fcfb9ce78",
@@ -212,54 +230,109 @@
       "headline": "The President vs. the Press",
       "url": "https://www.newyorker.com/magazine/2026/10/05/the-president-vs-the-press",
       "published": "2026-09-27T00:00:00+00:00",
-      "summary": "Cobb places Trump's ban on CNN, Politico and MS NOW, which a judge Trump appointed has temporarily blocked, in a long line of attacks on the press. What's different this time, he writes, is that rival news outlets joined together to defend the banned reporters.",
+      "image": "https://media.newyorker.com/photos/6ab6d7071e0539e8328601eb/16:9/w_1280,c_limit/r50344.jpg",
+      "highlight": null,
+      "summary": "Cobb writes that Trump's Sept. 18 order revoking White House access for CNN, Politico and MS NOW fits a long pattern of punishing the press, and a judge Trump appointed has temporarily blocked it. What stands out this time, he argues, is that rival outlets united to back the banned ones.",
       "black_life": false,
       "long_read": true,
       "quotes": [
         {
-          "text": "A decade later, Trump is in that business, yet it is still not standard for news organizations to come to one another’s defense.",
+          "text": "His behavior cannot be called unexpected at this point. What was noteworthy this time, however, was the way that the press responded.",
           "speaker": "Jelani Cobb",
           "timestamp": null,
           "url": "https://www.newyorker.com/magazine/2026/10/05/the-president-vs-the-press",
-          "context": "Cobb is writing about the White House revoking press access for CNN, Politico and MS NOW, and recalls that after the 2016 campaign bans few outlets stood up for the ones blocked."
-        },
-        {
-          "text": "The united front that journalists presented last week is significant, even inspiring, but, if history is any predictor, it will not be the last time they will be called on to do so.",
-          "speaker": "Jelani Cobb",
-          "timestamp": null,
-          "url": "https://www.newyorker.com/magazine/2026/10/05/the-president-vs-the-press",
-          "context": "This is how Cobb closes the piece, after describing how news outlets joined the lawsuit and refused pool coverage while a judge restored the banned reporters' access."
+          "context": "Cobb has just listed Trump's earlier fights with the press, from barring outlets in 2016 to suing several news organizations, before turning to how journalists answered this ban."
         }
       ]
     },
     {
-      "id": "094b5a5812a6",
+      "id": "08d83214fb4d",
+      "source": "Letters from an American",
+      "headline": "September 30, 2026",
+      "url": "https://heathercoxrichardson.substack.com/p/september-30-2026",
+      "published": "2026-10-01T04:04:31+00:00",
+      "image": "https://substackcdn.com/image/fetch/$s_!3IWB!,f_auto,q_auto:best,fl_progressive:steep/https%3A%2F%2Fheathercoxrichardson.substack.com%2Ftwitter%2Fsubscribe-card.jpg%3Fv%3D-503143608%26version%3D9",
+      "highlight": null,
+      "summary": "Richardson notes that the last U.S. forces left Iraq this week after more than two decades, and recounts how the 2003 invasion was sold on false claims about weapons of mass destruction. She argues Trump's war on Iran, now in its eighth month, shows the same cowboy mentality.",
+      "black_life": false,
+      "long_read": true,
+      "quotes": [
+        {
+          "text": "It later turned out that Powell had not personally vetted the “evidence” he presented and that it was almost entirely either discredited or made up of rumor.",
+          "speaker": "Heather Cox Richardson",
+          "timestamp": null,
+          "url": "https://heathercoxrichardson.substack.com/p/september-30-2026",
+          "context": "Richardson is describing Colin Powell's February 2003 speech to the United Nations, which helped win support for invading Iraq."
+        },
+        {
+          "text": "And yet the United States is entering its eighth month of a war on Iran that Trump apparently began with the same cowboy mentality Bush carried into the war in Iraq.",
+          "speaker": "Heather Cox Richardson",
+          "timestamp": null,
+          "url": "https://heathercoxrichardson.substack.com/p/september-30-2026",
+          "context": "Richardson is responding to Trump taking credit on social media for ending the U.S. role in Iraq."
+        }
+      ]
+    },
+    {
+      "id": "d7ff85e48f4e",
       "source": "Washington Informer",
-      "headline": "White House Grant Rule Could Threaten Voting Access for Disabled D.C. Residents",
-      "url": "https://www.washingtoninformer.com/federal-funding-voter-registration/",
-      "published": "2026-09-30T11:37:00+00:00",
-      "summary": "A proposed White House budget office rule would ban federal grant money for voter registration work, putting at risk a D.C. program that checks polling places for disability access. That program found problems at 72% of vote centers in the 2024 primary.",
+      "headline": "D.C. Workers Lose Half Their Family Leave as New Laws Take Effect",
+      "url": "https://www.washingtoninformer.com/dc-cuts-family-paid-leave/",
+      "published": "2026-10-01T14:50:00+00:00",
+      "image": "https://www.washingtoninformer.com/wp-content/uploads/2026/10/pexels-photo-7551668.jpeg",
+      "highlight": null,
+      "summary": "Starting Oct. 1, D.C. cut paid leave to care for a seriously ill relative from 12 weeks to six and medical leave from 12 to 10, with a lower $1,100 weekly maximum, through September 2030. Advocates note most workers using these benefits are Black and lower-income.",
       "black_life": false,
       "long_read": false,
       "quotes": []
     },
     {
-      "id": "f2ec68e625ea",
-      "source": "Washington Informer",
-      "headline": "Nearly 3,000 Guard Troops Remain in D.C. as Louisiana Sends More",
-      "url": "https://www.washingtoninformer.com/national-guard-dc-deployment/",
-      "published": "2026-09-30T11:17:00+00:00",
-      "summary": "The National Guard force in D.C. has dropped below 3,000 from a summer high of more than 5,100, but Louisiana is sending more troops and the Pentagon plans to continue through January 2029. Councilmember Brooke Pinto wants soldiers kept away from schools.",
+      "id": "5f2adbe79b27",
+      "source": "Philip Lewis (Bluesky)",
+      "headline": "Cornell University has agreed to an independent investigation into how the school handled …",
+      "url": "https://bsky.app/profile/phillewis.bsky.social/post/3mwrds7a5v22r",
+      "published": "2026-09-30T22:01:00+00:00",
+      "image": null,
+      "highlight": null,
+      "summary": null,
       "black_life": false,
       "long_read": false,
       "quotes": []
     },
     {
-      "id": "1e75206526cc",
+      "id": "00f9fe1f01ce",
+      "source": "Washington Informer",
+      "headline": "Van Hollen Bill Would Create Federally Backed Jobs For Long-Term Unemployed Workers",
+      "url": "https://www.washingtoninformer.com/van-hollen-ready-work-act/",
+      "published": "2026-09-30T22:30:00+00:00",
+      "image": "https://www.washingtoninformer.com/wp-content/uploads/2026/09/IMG_2278-scaled-e1790807635990.jpeg",
+      "highlight": "Van Hollen",
+      "summary": "Sen. Chris Van Hollen's Ready to Work Act would pay for temporary, paid jobs through local workforce boards for people out of work six months or longer, plus training and help with child care and transportation. Nearly 2 million Americans are long-term unemployed; the bill would also track AI's role in job loss.",
+      "black_life": false,
+      "long_read": false,
+      "quotes": []
+    },
+    {
+      "id": "a768599fc00e",
       "source": "Reuters",
-      "headline": "Renee Good's family sues Trump administration over fatal Minneapolis shooting",
-      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQZDFNUUJPc2dSYzI0MURCMk9ROVdRSnBYVzdiMHNKYkhndWN5UmtfdlFvUUxwUjk1VEM0N0MxRUM2clRIS2NrSndTYlpTUE9xa3dXSUxjWjVDbkp3TGgzeFBybmw5UG1EVkx6LUJhTTJLZUEwUWYyLVFrVFJGSjBPSkpkVld3bUVuUnNPZnlXLWRDeUhRZ2tzNENoSVlRUFVYUzBDSXZLOThUR2R5djFHWW8wa0l6YXQ0c0E?oc=5",
-      "published": "2026-10-01T17:57:45+00:00",
+      "headline": "Putin says the world is living through a dangerous moment, warns West not to escalate",
+      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNbmRoRDA2R19zaDc4RVpPclJ2UkNVS0hqZGdfbkJobzJHR015RmhJMDh1UFhIcXdaN3gyLXpEN05xN1Q0N0tlTFZvTk1WcWM4ZHJVak10d0hFQ3oyZG50OHNPLThHR2JXWExldEVRVzVYclJYN3VpeDVXaW1ENVByNjhwYi15M3lMNnU4Ull0ZDlJUWJkMVhXSVk0dEw2ZkxKTFJFeEVtSVV5b2l2YkZOXzJLaFo2Q3FzUHhlcXFQanhhUQ?oc=5",
+      "published": "2026-10-01T23:59:07+00:00",
+      "image": null,
+      "highlight": null,
+      "summary": null,
+      "black_life": false,
+      "long_read": false,
+      "quotes": []
+    },
+    {
+      "id": "5594821c25cb",
+      "source": "Reuters",
+      "headline": "Christa Pike getting \"life-saving medical care\" after surviving Tennessee execution",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQWk1wTDJka0h4dWZaZ2dlSUUzNHN0NENEUFRPdHctQWhvZHlvSmlBOEVHcktObXItQnF1SlBONDgtQjlSNXlXZzJqenlKRWthVXZ3c2xpSlFVM1R3dEU4RkoySkdXOHZmc0V4LWVodjBXR2hWNjI3WUZ2eFZBSXZjY3kxZkpVdmZOdjBSQVNqRzFSTUZab3BLQ2NfLU1vVXJVSEl0XzF1eXFPMVk?oc=5",
+      "published": "2026-10-01T21:58:04+00:00",
+      "image": null,
+      "highlight": null,
       "summary": null,
       "black_life": false,
       "long_read": false,
@@ -274,7 +347,8 @@
       "show": "The 85 South Comedy Show",
       "platform": "YouTube",
       "url": "https://www.youtube.com/watch?v=YXz_v4pMALE",
-      "published": "2026-09-25T19:57:29.447251+00:00"
+      "published": "2026-09-26T00:55:32.706442+00:00",
+      "image": "https://i.ytimg.com/vi/YXz_v4pMALE/hq720.jpg"
     }
   ]
 }
