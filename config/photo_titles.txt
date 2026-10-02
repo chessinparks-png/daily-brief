@@ -1,0 +1,32 @@
+# Wikimedia Commons files (public domain, National Park Service) used by fetcher/get_photos.py.
+# Hand-picked: green scenes, no people up close. Add or remove lines, then run get_photos.py.
+File:CongareeNPS (7166362546).jpg
+File:Thimbleberry Plant with Flowers (dcedd8ea-1013-4628-bc48-d7a52f4f325e).jpg
+File:Wingstem blooms in late summer. This photo was taken in September. These plants can grow to be 6-10 feet tall. (cb0f1968-1dd8-b71c-077e-b1882fd71cfc).JPG
+File:Sites at Look Rock Picnic Area (c9f3d29c-6bd0-4785-b988-02d794f37772).jpg
+File:Prince William Forest Park PRWI9793.jpg
+File:A view into the forest canopy (24d1145e-e1b3-42d7-9c8a-128bc6499407).jpg
+File:Entrance to Camp 3 (0c6447c5-39e6-4f5b-9c72-108ec02dc0ed).jpg
+File:A view looking across the gorge to Diamond Point and Endless Wall. (e2d72c36-9744-4822-8ad9-317e092fa579).JPG
+File:Big Meadows (30856520057).jpg
+File:Ericson Bay Marsh backcountry ozette backpacking NPS Photo 2000 (22478740123).jpg
+File:CongareeNPS (7166350366).jpg
+File:CongareeNPS (7166367802).jpg
+File:Visitors often view elk from this porch. (08d062ea-06a1-4bc1-b68b-d15fe9394601).jpg
+File:Prince William Forest Park PRWI9794.jpg
+File:CongareeNPS (7166353524).jpg
+File:Rapids of Rock Creek near Rapids Bridge. (8b183356-1dd8-b71b-0bb2-fce35866a0d6).jpg
+File:CongareeNPS (7166288854).jpg
+File:Prince William Forest Park PRWI9800.jpg
+File:Blue Ridge Parkway BLRI9235.jpg
+File:Olympic Rain Forest (f8c0e7a6-dac9-7bdc-8a97-c6f21f000de3).jpg
+File:CongareeNPS (7509500918).jpg
+File:Prince William Forest Park PRWI9737.jpg
+File:CongareeNPS (7166403838).jpg
+File:Harpers Ferry National Historical Park HAFE0011.jpg
+File:Prince William Forest Park PRWI9736.jpg
+File:Blue Ridge Parkway BLRI9243.jpg
+File:Blue Ridge Parkway BLRI9308.jpg
+File:Big Meadows Fall Color, September 28.jpg
+File:National Capital Parks-East Rangers teamed up with Wilderness Inquiry to lead canoe trips up the Anacostia River. (2fe0fcff-1dd8-b71c-0744-e7d86668f087).jpg
+File:Prince William Forest Park PRWI9738.jpg

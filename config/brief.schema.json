@@ -102,37 +102,9 @@
         },
         "quotes": {
           "type": "array",
-          "maxItems": 2,
+          "maxItems": 5,
           "items": {
-            "type": "object",
-            "required": [
-              "text",
-              "speaker",
-              "timestamp",
-              "url"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "text": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 300
-              },
-              "speaker": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "timestamp": {
-                "type": "string",
-                "pattern": "^(\\d+:)?\\d{1,2}:\\d{2}$"
-              },
-              "url": {
-                "type": "string",
-                "format": "uri"
-              }
-            }
+            "$ref": "#/$defs/quote"
           }
         },
         "takeaway": {
@@ -159,7 +131,9 @@
         "url",
         "published",
         "summary",
-        "black_life"
+        "black_life",
+        "long_read",
+        "quotes"
       ],
       "additionalProperties": false,
       "properties": {
@@ -194,6 +168,16 @@
         },
         "black_life": {
           "type": "boolean"
+        },
+        "long_read": {
+          "type": "boolean"
+        },
+        "quotes": {
+          "type": "array",
+          "maxItems": 2,
+          "items": {
+            "$ref": "#/$defs/quote"
+          }
         }
       }
     },
@@ -234,6 +218,46 @@
             "string",
             "null"
           ]
+        }
+      }
+    },
+    "quote": {
+      "type": "object",
+      "required": [
+        "text",
+        "speaker",
+        "timestamp",
+        "url",
+        "context"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "speaker": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "timestamp": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(\\d+:)?\\d{1,2}:\\d{2}$"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
         }
       }
     }

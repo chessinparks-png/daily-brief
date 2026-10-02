@@ -82,8 +82,8 @@ def stamp(seconds):
     return f"[{s // 3600}:{s // 60 % 60:02d}:{s % 60:02d}]" if s >= 3600 else f"[{s // 60}:{s % 60:02d}]"
 
 
-def write_text(item, text):
-    path = TEXT_DIR / item["source_id"] / f"{item['id']}.txt"
+def write_text(item, text, name=None):
+    path = TEXT_DIR / item["source_id"] / (name or f"{item['id']}.txt")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text)
     item["text_file"] = str(path.relative_to(fetch.ROOT))
@@ -114,16 +114,82 @@ def decode_audio(path):
     return np.frombuffer(pcm, np.int16).astype(np.float32) / 32768.0
 
 
-def transcribe(item, model_name):
+def download_podcast_audio(item, audio):
+    with fetch.session.get(item["audio_url"], stream=True, timeout=60) as r:
+        r.raise_for_status()
+        with open(audio, "wb") as f:
+            for chunk in r.iter_content(1 << 20):
+                f.write(chunk)
+    return audio
+
+
+def download_youtube_audio(item, audio):
+    """Audio of the matching YouTube video, so [m:ss] stamps are the same as in the video.
+    Premieres only offer HLS (5-second pieces); those are fetched in parallel, which is
+    far faster than yt-dlp's own one-at-a-time download. A premiere still airing is skipped."""
+    import yt_dlp
+    from concurrent.futures import ThreadPoolExecutor
+    from urllib.parse import urljoin
+    opts = {"format": "233/234/bestaudio", "quiet": True, "no_warnings": True,
+            "outtmpl": str(audio.with_suffix("")) + ".yt.%(ext)s"}
+    with yt_dlp.YoutubeDL(opts) as ydl:
+        info = ydl.extract_info(item["quote_link"], download=False)
+        if info.get("live_status") in ("is_live", "is_upcoming", "post_live"):
+            raise RuntimeError("video is still premiering" if info["live_status"] == "is_live"
+                               else f"video is {info['live_status'].replace('_', ' ')}")
+        if not str(info.get("protocol", "")).startswith("m3u8"):
+            ydl.process_info(info)
+            return Path(ydl.prepare_filename(info))
+    playlist = fetch.get(info["url"]).text
+    if "#EXT-X-ENDLIST" not in playlist:
+        raise RuntimeError("video isn't finished processing")
+    pieces = [urljoin(info["url"], line) for line in playlist.splitlines() if line and not line[0] == "#"]
+
+    def piece(url):
+        for attempt in range(3):
+            try:
+                r = fetch.get(url)
+                r.raise_for_status()
+                return r.content
+            except Exception:  # noqa: BLE001
+                if attempt == 2:
+                    raise
+                time.sleep(1 + attempt)
+
+    out = audio.with_suffix(".yt.ts")
+    with ThreadPoolExecutor(12) as pool, open(out, "wb") as f:
+        for data in pool.map(piece, pieces):
+            f.write(data)
+    return out
+
+
+def youtube_match(src, title, cache={}):
+    """The channel's YouTube video for a podcast episode (same title), or None. Podcast
+    audio has ads inserted per listener, so its timestamps can't link into YouTube."""
+    cid = src.get("youtube_channel_id")
+    if not cid:
+        return None
+    if cid not in cache:
+        try:
+            r = fetch.get(f"https://www.youtube.com/feeds/videos.xml?channel_id={cid}")
+            cache[cid] = fetch.feedparser.parse(r.content).entries
+        except Exception:  # noqa: BLE001
+            cache[cid] = []
+
+    def plain(t):  # "Episode title | Native Land Pod 151" -> "episode title"
+        return norm_title(re.sub(r"\s*\|.*$", "", t or ""))
+    for e in cache[cid]:
+        if plain(e.get("title")) == plain(title) and "/shorts/" not in (e.get("link") or ""):
+            return e["link"]
+    return None
+
+
+def transcribe(item, model_name, download=download_podcast_audio):
     """Download the episode audio, transcribe it locally, then delete the audio."""
     AUDIO_DIR.mkdir(parents=True, exist_ok=True)
     audio = AUDIO_DIR / f"{item['id']}.mp3"
     try:
-        with fetch.session.get(item["audio_url"], stream=True, timeout=60) as r:
-            r.raise_for_status()
-            with open(audio, "wb") as f:
-                for chunk in r.iter_content(1 << 20):
-                    f.write(chunk)
+        audio = download(item, audio)
         started = time.time()
         segments, info = whisper_model(model_name).transcribe(
             decode_audio(audio), language="en", vad_filter=True)
@@ -189,6 +255,8 @@ def collect(args):
                     "link": it["link"], "published": it["published"]}
             if src.get("black_life") == "always":
                 item["black_life"] = True
+            if src.get("long_read"):
+                item["long_read"] = True
             skip = lambda reason: skipped.append({**item, "reason": reason})  # noqa: E731
 
             if re.fullmatch(r"https?://\S+", it["title"].strip()):
@@ -227,16 +295,31 @@ def collect(args):
 
             elif src["kind"] == "podcast" or it.get("audio_url"):
                 item.update(audio_url=it.get("audio_url"), duration=it.get("duration"))
-                cached = TEXT_DIR / src["id"] / f"{item['id']}.txt"
+                video = youtube_match(src, it["title"])
+                if video:  # use the video's audio: quote timestamps then link into YouTube
+                    item["quote_link"] = video
+                cached = TEXT_DIR / src["id"] / (f"{item['id']}.yt.txt" if video else f"{item['id']}.txt")
                 if cached.exists():
-                    write_text(item, cached.read_text())
+                    write_text(item, cached.read_text(), cached.name)
                 elif args.no_whisper or not item["audio_url"]:
                     item["status"] = "no_transcript"
                     item["note"] = "Whisper skipped (--no-whisper)" if args.no_whisper else "no audio link"
                 else:
-                    print(f"  {it['title']}")
+                    print(f"  {it['title']}" + (f"  (YouTube audio: {video})" if video else ""))
                     try:
-                        write_text(item, transcribe(item, args.whisper_model))
+                        try:
+                            text = transcribe(item, args.whisper_model,
+                                              download_youtube_audio if video else download_podcast_audio)
+                        except Exception as e:  # noqa: BLE001
+                            if not video:
+                                raise
+                            print(f"  YouTube audio not used ({e}); using the podcast audio")
+                            item.pop("quote_link")
+                            video = None
+                            podcast_cache = TEXT_DIR / src["id"] / f"{item['id']}.txt"
+                            text = (podcast_cache.read_text() if podcast_cache.exists()
+                                    else transcribe(item, args.whisper_model))
+                        write_text(item, text, f"{item['id']}.yt.txt" if video else None)
                     except Exception as e:  # noqa: BLE001
                         item["status"] = "no_transcript"
                         item["note"] = f"Whisper failed: {type(e).__name__}: {e}"

@@ -7,9 +7,10 @@ Errors (exit 1, must be fixed):
     repeated or has the wrong link
   - fewer than 12 headlines while some were left out, or Black Life headlines not listed first
   - a summary written for a headline-only item, or a summarizable item left empty
-  - a quote that isn't word-for-word in the transcript, is too long, or has the wrong
-    timestamp / link
-  - a summary that copies 12+ words in a row from the source (quotes aside)
+  - a quote (up to 5 per episode, up to 2 per long read) that isn't word-for-word in the
+    transcript or article, is longer than 2 sentences, has no 1-2 sentence context, or has
+    the wrong timestamp / link
+  - a summary, card or quote context that copies 12+ words in a row from the source
 Warnings (review, then decide):
   - an item not tagged Black Life (or a headline left out) whose text matches
     config/black_life_keywords.txt
@@ -29,7 +30,9 @@ INPUT = ROOT / "data" / "raw" / "brief_input.json"
 SCHEMA = ROOT / "config" / "brief.schema.json"
 KEYWORDS = ROOT / "config" / "black_life_keywords.txt"
 
-QUOTE_MAX_WORDS = 40
+QUOTE_MAX_WORDS = 50      # and at most 2 sentences
+QUOTE_MAX_SENTENCES = 2
+CONTEXT_MAX_WORDS = 60    # 1-2 sentences saying what was being discussed
 COPY_RUN = 12             # this many words in a row copied from the source = too close
 TIMESTAMP_SLACK = 5       # seconds
 SUMMARY_MAX_WORDS = 60
@@ -86,25 +89,54 @@ def find(needle, hay):
 
 
 def check_quote(q, item, toks, times, err):
+    """toks/times come from transcript_index (stamped transcript, times is a list), or
+    toks is the plain word list of an article (times is None)."""
     qw = words(q["text"])
     if len(qw) > QUOTE_MAX_WORDS:
         err(f"quote is {len(qw)} words (max {QUOTE_MAX_WORDS}): {q['text'][:60]!r}")
+    if sentences(q["text"]) > QUOTE_MAX_SENTENCES:
+        err(f"quote is more than {QUOTE_MAX_SENTENCES} sentences: {q['text'][:60]!r}")
+    cw = words(q["context"])
+    if len(cw) > CONTEXT_MAX_WORDS or sentences(q["context"]) > 2:
+        err(f"quote context must be 1-2 sentences, max {CONTEXT_MAX_WORDS} words: {q['context'][:60]!r}")
     if "..." in q["text"] or "…" in q["text"]:
         err(f"quote must be one unbroken passage, no ellipses: {q['text'][:60]!r}")
         return
     pos = find(qw, toks)
     if pos is None:
-        err(f"quote not found word-for-word in the transcript: {q['text'][:60]!r}")
+        err(f"quote not found word-for-word in the source text: {q['text'][:60]!r}")
+        return
+    if times is None:  # article: no timestamp, links to the article
+        if q["timestamp"] is not None:
+            err("article quotes have no timestamp (set it to null)")
+        if q["url"] != item["link"]:
+            err(f"quote url should be {item['link']}")
+        return
+    if q["timestamp"] is None:
+        err(f"quote needs a timestamp: {q['text'][:60]!r}")
         return
     start = times[pos]
     if abs(seconds(q["timestamp"]) - start) > TIMESTAMP_SLACK:
         err(f"quote timestamp {q['timestamp']} should be {stamp(start)}")
-    if "youtube.com" in item["link"]:
-        want = f"{item['link']}&t={seconds(q['timestamp'])}s"
+    base = item.get("quote_link") or item["link"]
+    if "youtube.com" in base:
+        want = f"{base}&t={seconds(q['timestamp'])}s"
     else:  # podcast links can't jump to a time; ads also shift timestamps per listener
-        want = item["link"]
+        want = base
     if q["url"] != want:
         err(f"quote url should be {want}")
+
+
+def check_quotes(quotes, item, src, limit, err):
+    if len(quotes) > limit:
+        err(f"{len(quotes)} quotes (max {limit})")
+    if len({tuple(words(q["text"])) for q in quotes}) < len(quotes):
+        err("the same quote is listed twice")
+    toks, times = transcript_index(src)
+    if not toks:  # an article, not a [m:ss] transcript
+        toks, times = words(src), None
+    for q in quotes:
+        check_quote(q, item, toks, times, err)
 
 
 def copied_run(text, src_grams):
@@ -188,20 +220,25 @@ def main():
                 err("this source always counts as Black Life: set black_life to true")
 
             if section == "episodes":
-                written = out["cards"] + ([out["takeaway"]] if out["takeaway"] else [])
+                written = (out["cards"] + ([out["takeaway"]] if out["takeaway"] else [])
+                           + [q["context"] for q in out["quotes"]])
                 if it["summarize"]:
                     if len(out["cards"]) < 2 or not out["takeaway"]:
                         err("needs 2-4 cards and a takeaway")
-                    toks, times = transcript_index(src)
-                    for q in out["quotes"]:
-                        check_quote(q, it, toks, times, err)
+                    check_quotes(out["quotes"], it, src, 5, err)
                 elif written or out["quotes"]:
                     err(f"status is {it['status']}: no cards, quotes or takeaway allowed")
                 for c in out["cards"]:
                     if len(words(c)) > CARD_MAX_WORDS:
                         err(f"card is {len(words(c))} words (max {CARD_MAX_WORDS})")
             else:
-                written = [out["summary"]] if out["summary"] else []
+                written = ([out["summary"]] if out["summary"] else []) + [q["context"] for q in out["quotes"]]
+                if out["long_read"] != bool(it.get("long_read")):
+                    err(f"long_read should be {str(bool(it.get('long_read'))).lower()}")
+                if out["quotes"] and not (it.get("long_read") and it["summarize"]):
+                    err("only summarized long reads can have quotes")
+                elif out["quotes"]:
+                    check_quotes(out["quotes"], it, src, 2, err)
                 if it["summarize"] and not out["summary"]:
                     err("needs a summary")
                 if not it["summarize"] and out["summary"]:
@@ -239,7 +276,7 @@ def report(errors, warnings, brief=None):
         eps, hls = brief["episodes"], brief["headlines"]
         bl = sum(x["black_life"] for x in eps + hls)
         print(f"OK: {len(eps)} episodes, {len(hls)} headlines, {bl} tagged Black Life, "
-              f"{sum(len(e['quotes']) for e in eps)} quotes")
+              f"{sum(len(x['quotes']) for x in eps + hls)} quotes")
     return 1 if errors else 0
 
 

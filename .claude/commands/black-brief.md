@@ -32,13 +32,8 @@ brief_input.json's `failed_sources`).
 - `cards`: 2–4 cards, each 2–3 sentences (max 70 words), covering the main points in
   the order they come up. Attribute views to the speaker ("Richardson argues…").
 - `takeaway`: one line, the single thing worth remembering.
-- `quotes`: 0–2 of the most striking or informative lines. Each is one unbroken passage
-  copied **word for word** from the transcript (no ellipses, max 40 words). Fix only
-  capitalization and punctuation. Never quote ads or sponsor reads (podcast transcripts
-  start with ads). `speaker`: the name if the transcript makes it clear, else null.
-  `timestamp`: the `[m:ss]` stamp of the line where the quote starts. `url`: for YouTube,
-  the video url plus `&t=<seconds>s`; for podcasts, the episode url (timestamps there
-  are approximate because ads vary per listener).
+- `quotes`: 0–5 of the most striking or informative lines (fewer if the episode has
+  fewer; never pad). See **Quotes** below.
 - `title`: the item title.
 - Episodes with `summarize: false`: `cards: []`, `quotes: []`, `takeaway: null`.
 
@@ -46,12 +41,32 @@ brief_input.json's `failed_sources`).
 - `headline`: the item title (drop a trailing " - Reuters").
 - `summary`: `summarize: true` → 1–2 sentences, max 60 words, your own words.
   `summarize: false` → `null`.
+- `long_read`: copy `long_read` from brief_input.json (`true` or `false`; missing = `false`).
+- `quotes`: `[]`, except for a long read with `summarize: true` (Cobb, Harriot, Letters from an
+  American, Black Perspectives, Capital B): 1–2 quotes. See **Quotes** below.
 
 **Levity** (`section: "levity"`): copy `id`, `source`, `title`, `show`, `platform`,
 `published` and `link` (as `url`). No summary, nothing else.
 
-**For every summary, card and takeaway:** use only facts in the source text. Write in your
-own words: never copy 12 or more words in a row from the source (quotes are the only
+**Quotes** (episodes: up to 5; long reads: 1–2). Real, word-for-word quotes only:
+- `text`: one unbroken passage copied **exactly** from the transcript or article text file:
+  one or two sentences, max 50 words, no ellipses, no joining of separate passages. Fix only
+  capitalization and punctuation. **If you are not sure of the exact wording, leave the quote
+  out.** Never paraphrase, never tidy up grammar, never quote ads or sponsor reads (podcast
+  transcripts start with ads). Pick lines that make sense on their own and are worth remembering:
+  spread them across the episode, no two from the same moment.
+- `context`: 1–2 sentences (max 60 words) in your own words: what topic or moment was being
+  discussed that led to the quote, so it makes sense on its own. Use only facts in the source.
+- `speaker`: the person's name if the text makes it clear (add who they're recalling if they're
+  quoting someone), else null. For an article, the author's name if clear, else null.
+- Episodes: `timestamp` is the `[m:ss]` stamp of the line where the quote starts. `url` is the
+  item's `quote_link` plus `&t=<seconds>s` when brief_input.json has `quote_link` (the YouTube
+  video of that episode); otherwise (no YouTube video) it is the item `link`, with timestamps
+  only approximate because ads vary per listener.
+- Long reads: `timestamp` is `null` and `url` is the item `link`.
+
+**For every summary, card, takeaway and quote context:** use only facts in the source text. Write in your
+own words: never copy 12 or more words in a row from the source (quote `text` is the only
 exception). Be neutral and plain; no hype.
 
 **Black Life** (`black_life`): decide by what the story is actually about. Tag it `true`

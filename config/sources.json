@@ -1,5 +1,5 @@
 {
-  "_comment": "Edit this file to add/remove sources. 'kind' decides how the fetcher reads the source. 'cadence': 'only_when_new' looks back 14 days (for writers who publish less than weekly). 'black_life': 'always' tags every item Black Life.",
+  "_comment": "Edit this file to add/remove sources. 'kind' decides how the fetcher reads the source. 'cadence': 'only_when_new' looks back 14 days (for writers who publish less than weekly). 'black_life': 'always' tags every item Black Life. 'long_read': true puts a source's summarized items in the Read tab and lets the brief quote them. 'youtube_channel_id' on a podcast: use the matching YouTube video's audio, so quote timestamps link to YouTube.",
   "sources": [
     {
       "id": "native-land-pod",
@@ -8,7 +8,8 @@
       "section": "listen",
       "itunes_search": "Native Land Pod",
       "feed_url": "https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/2ff2787c-f4fa-44c3-901e-b0df01400acb/14e7fc6c-fcbf-4b34-98bc-b0df0140ae06/podcast.rss",
-      "summarize": true
+      "summarize": true,
+      "youtube_channel_id": "UCPwDm9ID1xdHlHnkYDizCCA"
     },
     {
       "id": "jemele-hill-yt",
@@ -34,7 +35,8 @@
         "https://news.google.com/rss/search?q=site:heathercoxrichardson.substack.com&hl=en-US&gl=US&ceid=US:en"
       ],
       "_note": "Substack 403s GitHub Actions IPs; the Google News fallback gives titles + links only.",
-      "summarize": true
+      "summarize": true,
+      "long_read": true
     },
     {
       "id": "capital-b",
@@ -46,7 +48,8 @@
         "https://capitalbnews.org/rss/",
         "https://capitalbnews.org/feed.xml"
       ],
-      "summarize": true
+      "summarize": true,
+      "long_read": true
     },
     {
       "id": "reuters",
@@ -105,7 +108,8 @@
       "fetch_full_text": true,
       "black_life": "always",
       "_note": "Feed has excerpts only, so each article page is downloaded.",
-      "summarize": true
+      "summarize": true,
+      "long_read": true
     },
     {
       "id": "michael-harriot",
@@ -115,7 +119,8 @@
       "url": "https://www.contrabandcamp.com",
       "author": "Michael Harriot",
       "_note": "~19 posts in 60 days (Aug-Sep 2026). Free podcasts are transcribed; paid-only posts are headline + link.",
-      "summarize": true
+      "summarize": true,
+      "long_read": true
     },
     {
       "id": "jelani-cobb",
@@ -125,7 +130,8 @@
       "url": "https://www.newyorker.com/contributors/jelani-cobb",
       "cadence": "only_when_new",
       "_note": "1 piece in 60 days (Aug-Sep 2026).",
-      "summarize": true
+      "summarize": true,
+      "long_read": true
     },
     {
       "id": "tiffany-cross",
@@ -135,7 +141,8 @@
       "url": "https://tiffanydcross.substack.com",
       "cadence": "only_when_new",
       "_note": "0 posts in 60 days (last: July 9, 2026). Her ACross Generations podcast ended Jan 2025.",
-      "summarize": true
+      "summarize": true,
+      "long_read": true
     },
     {
       "id": "michael-harriot-bsky",

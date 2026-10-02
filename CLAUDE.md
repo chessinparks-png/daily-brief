@@ -11,7 +11,8 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
   API keys. Summaries are written by Claude Code itself during `/black-brief`.
 
 ## Hard rules
-- Publish only summaries and short quotes (at most 2 per episode). Never commit or
+- Publish only summaries and short quotes (up to 5 per episode, 1-2 per long read, each one or
+  two sentences, word for word, with 1-2 sentences of context). Never commit or
   publish full transcripts or article text. Raw inputs go in `data/raw/` (gitignored).
 - Sources with `"summarize": false` in `config/sources.json` (Reuters, Bluesky) get headline +
   link only, and so do paid-only Substack posts. Never write a summary from a headline alone.
@@ -35,6 +36,11 @@ architecture, the stages, the decisions made so far, and the Stage 1 test result
   headline-only items, no copied passages); warns on Black Life keyword matches left untagged
 - `.claude/commands/black-brief.md`: the `/black-brief` command (collect → write → validate → publish)
 - `config/black_life_keywords.txt`: backup keyword list for Black Life tagging (owner edits it)
+- App (repo root, no build step): `index.html`, `app.css`, `app.js`, `sw.js`, `manifest.webmanifest`,
+  `icons/`. Preview on a Mac: `python fetcher/preview.py` (never serves `data/raw/`).
+- `tips.txt`: grounding tips, one per line, written once and edited by the owner; the daily run never touches it
+- `photos/` + `photos/photos.json`: 30 public-domain NPS hero photos (one per day) from
+  `fetcher/get_photos.py` and `config/photo_titles.txt`; credit line shown in the app
 - `.github/workflows/fetch-feeds.yml`: Stage 1 test workflow (cloud check only)
 
 ## Commands
